@@ -165,15 +165,16 @@ $("#pal").innerHTML=PL.map(p=>`<button title="${p[0]}" aria-label="${p[0]} palet
 document.querySelectorAll("#pal button").forEach((b,j)=>b.onclick=()=>setP(j+1));setP(pv||(matchMedia("(prefers-color-scheme:dark)").matches?4:1));
 
 tabs();$("#list").innerHTML='<div class="empty">Loading from Google Sheets…</div>';
-const CFG={id:"1j-SWtdsom-7nFrwAhxJRyE12Hsm5fktJ3dNU5CdXqLg",gid:"930686596",projects:"Development Projects",parts:"New Parts",every:300000},SNAP="29 Oct 2026",SHEET="https://docs.google.com/spreadsheets/d/1j-SWtdsom-7nFrwAhxJRyE12Hsm5fktJ3dNU5CdXqLg/edit?gid=930686596#gid=930686596";
+const CFG={id:"1j-SWtdsom-7nFrwAhxJRyE12Hsm5fktJ3dNU5CdXqLg",gid:"930686596",projects:"Development Projects",parts:"New Parts",feedP:"Feed Projects",feedX:"Feed Parts",every:300000},SNAP="29 Oct 2026",SHEET="https://docs.google.com/spreadsheets/d/1j-SWtdsom-7nFrwAhxJRyE12Hsm5fktJ3dNU5CdXqLg/edit?gid=930686596#gid=930686596";
 const ROW=p=>p.row?`https://docs.google.com/spreadsheets/d/${CFG.id}/edit#gid=${CFG.gid}&range=A${p.row}`:SHEET;
-const toISO=v=>{const m=/^Date\((\d+),(\d+),(\d+)/.exec(v||"");return m?`${m[1]}-${String(+m[2]+1).padStart(2,"0")}-${String(+m[3]).padStart(2,"0")}`:null},tx=v=>v==null?"":String(v).trim();
+const toISO=v=>{if(typeof v==="number"&&v>30000&&v<80000)return new Date(Date.UTC(1899,11,30)+v*864e5).toISOString().slice(0,10);const m=/^Date\((\d+),(\d+),(\d+)/.exec(v||"");return m?`${m[1]}-${String(+m[2]+1).padStart(2,"0")}-${String(+m[3]).padStart(2,"0")}`:null},tx=v=>v==null?"":String(v).trim();
 const mapP=({r,n})=>({id:tx(r[0]),oem:tx(r[1]),model:tx(r[2]),sys:tx(r[3]),type:tx(r[4]),pri:tx(r[5]),sales:tx(r[6]),owner:tx(r[7]),enq:toISO(r[8]),sop:toISO(r[9]),m:[10,11,12,13,14,15,16,17].map(i=>toISO(r[i])),status:tx(r[18])||"On Track",reason:tx(r[19]),bs:toISO(r[20])||toISO(r[22]),note:tx(r[21]),row:n});
 const mapX=({r})=>({id:tx(r[0]),desc:tx(r[1]),mb:tx(r[2]),code:tx(r[3]),po:tx(r[4]),pod:toISO(r[5]),sup:tx(r[6]),qty:tx(r[7]),prom:toISO(r[8]),recv:toISO(r[9]),insp:tx(r[10])});
-async function gv(t){const r=await fetch(`https://docs.google.com/spreadsheets/d/${CFG.id}/gviz/tq?tqx=out:json&headers=1&sheet=${encodeURIComponent(t)}`),x=await r.text(),j=JSON.parse(x.slice(x.indexOf("{"),x.lastIndexOf("}")+1));if(j.status!=="ok")throw new Error("gviz");return j.table.rows.map((r,i)=>({r:(r.c||[]).map(c=>c?c.v:null),n:i+2}))}
+async function gv(t,chk){const r=await fetch(`https://docs.google.com/spreadsheets/d/${CFG.id}/gviz/tq?tqx=out:json&headers=1&sheet=${encodeURIComponent(t)}`),x=await r.text(),j=JSON.parse(x.slice(x.indexOf("{"),x.lastIndexOf("}")+1));if(j.status!=="ok")throw new Error("gviz");const rows=j.table.rows.map((r,i)=>({r:(r.c||[]).map(c=>c?c.v:null),n:i+2}));if(chk&&!String(j.table.cols[1]&&j.table.cols[1].label).startsWith(chk))throw new Error("tab");return rows}
+const pick=async(a,b,chk)=>{try{return await gv(a,chk)}catch(e){return gv(b,chk)}};
 let loaded=false;
 async function load(manual){const b=$("#rf"),s=$("#sync");b.disabled=true;s.dataset.err="";s.textContent="Syncing with Google Sheets…";
-try{const[p,x]=await Promise.all([gv(CFG.projects),gv(CFG.parts)]),P=p.map(mapP).filter(q=>q.oem||q.model);if(!P.length)throw 0;D={projects:P,parts:x.map(mapX).filter(q=>q.desc)};
+try{const[p,x]=await Promise.all([pick(CFG.feedP,CFG.projects,"OEM"),pick(CFG.feedX,CFG.parts,"Part")]),P=p.map(mapP).filter(q=>q.oem||q.model);if(!P.length)throw 0;D={projects:P,parts:x.map(mapX).filter(q=>q.desc)};
 s.textContent="Live from Google Sheets · synced "+new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});if(manual)toast("Tracker refreshed")}
 catch(e){s.dataset.err="1";s.textContent=loaded?"Couldn’t refresh. Showing the last synced data.":"Couldn’t reach the sheet, so this is a saved copy from "+SNAP+(location.protocol==="file:"?". Open this page from its GitHub Pages address, because browsers block sheet access from a local file.":". Share the sheet as “Anyone with the link can view” to go live.")}
 b.disabled=false;const fp=$("#fp").value,fc=$("#fc").value;prep();opts();$("#fp").value=fp;$("#fc").value=fc;kpis();render();loaded=true}
