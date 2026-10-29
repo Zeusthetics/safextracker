@@ -101,8 +101,8 @@ const rm=matchMedia("(prefers-reduced-motion:reduce)").matches;
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;io.unobserve(e.target);const el=e.target;el.classList.add("in");
 if(el.classList.contains("cnt")){const N=+el.dataset.n;if(rm){el.textContent=N;return}const t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/1100);el.textContent=Math.round(N*(1-Math.pow(1-k,3)));k<1&&requestAnimationFrame(f)})(t0)}}),{threshold:.3});
 document.querySelectorAll(".rv").forEach(e=>io.observe(e));
-async function live(){try{const g=async t=>{const x=await(await fetch(`https://docs.google.com/spreadsheets/d/1j-SWtdsom-7nFrwAhxJRyE12Hsm5fktJ3dNU5CdXqLg/gviz/tq?tqx=out:json&headers=1&sheet=${encodeURIComponent(t)}`)).text();return JSON.parse(x.slice(x.indexOf("{"),x.lastIndexOf("}")+1)).table.rows.map(r=>(r.c||[]).map(c=>c?c.v:null))};
-const[p,x]=await Promise.all([g("Development Projects"),g("New Parts")]),P=p.filter(r=>r[1]||r[2]),st=r=>String(r[18]||"").trim();if(!P.length)throw 0;
+async function live(){try{const g=async t=>{const x=await(await fetch(`https://docs.google.com/spreadsheets/d/1j-SWtdsom-7nFrwAhxJRyE12Hsm5fktJ3dNU5CdXqLg/gviz/tq?tqx=out:json&headers=1&sheet=${encodeURIComponent(t)}`)).text();const d=JSON.parse(x.slice(x.indexOf("{"),x.lastIndexOf("}")+1)),o=d.table.rows.map(r=>(r.c||[]).map(c=>c?c.v:null));o.l=String(d.table.cols[1]&&d.table.cols[1].label);return o},h=async(a,b,k)=>{try{const o=await g(a);if(o.l.startsWith(k))return o}catch(e){}return g(b)};
+const[p,x]=await Promise.all([h("Feed Projects","Development Projects","OEM"),h("Feed Parts","New Parts","Part")]),P=p.filter(r=>r[1]||r[2]),st=r=>String(r[18]||"").trim();if(!P.length)throw 0;
 const v=[P.length,P.filter(r=>String(r[5]||"")[0]==="A"&&st(r)!=="Done").length,P.filter(r=>["Blocked","At Risk"].includes(st(r))).length,x.filter(r=>r[1]).length];
 document.querySelectorAll(".cnt").forEach((e,i)=>e.dataset.n=v[i]);$("#ft").textContent="Figures live from the tracker"}catch(e){}}
 live().finally(()=>document.querySelectorAll(".cnt").forEach(e=>io.observe(e)));
