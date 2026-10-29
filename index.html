@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Safex Project Tracker</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{--bg:#F4F0EA;--ink:#3D3431;--mut:#7A6C66;--line:#3D343133;--acc:#C66B48;--acc2:#E0A96D;--onacc:#fff;--hero:#2C2523;--onhero:#F4F0EA;--card:#FFFCF7;--cink:#3D3431;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+[data-p="2"]{--bg:#FAF6F0;--ink:#1A1512;--mut:#8C7E74;--line:#1A151233;--acc:#B07C64;--acc2:#DCA482;--onacc:#fff;--hero:#1A1512;--onhero:#FAF6F0;--card:#fff;--cink:#1A1512}
+[data-p="3"]{--bg:#FFFDF6;--ink:#1C0F0D;--mut:#6B5A52;--line:#1C0F0D33;--acc:#E64A33;--acc2:#F3B643;--onacc:#1C0F0D;--hero:#1C0F0D;--onhero:#FFFDF6;--card:#EADBC8;--cink:#1C0F0D}
+[data-p="4"]{--bg:#190F0E;--ink:#FFF5F2;--mut:#C9A9A2;--line:#FFF5F233;--acc:#F28D77;--acc2:#D9735B;--onacc:#190F0E;--hero:#2E1C1A;--onhero:#FFF5F2;--card:#2E1C1A;--cink:#FFF5F2;color-scheme:dark}
+.top{--ink:var(--onhero);--mut:color-mix(in srgb,var(--onhero) 70%,var(--hero));--line:color-mix(in srgb,var(--onhero) 25%,transparent);background:var(--hero);color:var(--onhero)}
+.pal{display:flex;gap:6px}.pal button{width:24px;height:24px;border-radius:50%;border:2px solid var(--ink);padding:0;cursor:pointer;background:var(--s1);box-shadow:inset -12px 0 0 var(--s2)}.pal button[aria-pressed=true]{outline:2px solid var(--acc);outline-offset:2px}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.55 "Source Serif 4",Georgia,serif;overflow-x:hidden}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.07;mix-blend-mode:multiply;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.ax{font-family:Archivo,system-ui,sans-serif}
+.w{max-width:1180px;margin:0 auto;padding:0 22px}
+a{color:inherit}:focus-visible{outline:3px solid var(--acc);outline-offset:3px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:20px 0;border-bottom:2px solid var(--ink)}
+.mk{font:800 20px Archivo,sans-serif;font-stretch:125%;letter-spacing:.02em;display:flex;gap:10px;align-items:center}.mk i{width:14px;height:14px;background:var(--acc);display:block;transform:rotate(45deg)}
+.mk span{font-weight:500;color:var(--mut);font-stretch:100%}
+.nl{font:600 15px Archivo,sans-serif;text-decoration:none;border-bottom:2px solid var(--acc);padding-bottom:2px}
+.hero{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:40px;padding:56px 0 80px;align-items:start}
+@media(max-width:860px){.hero{grid-template-columns:1fr;padding-top:36px}}
+h1{font:900 clamp(60px,12vw,156px)/.86 Archivo,sans-serif;font-stretch:68%;letter-spacing:-.01em;margin:0 0 28px}
+h1 span{display:block;overflow:hidden}h1 b{display:block;font-weight:inherit;animation:up .9s cubic-bezier(.2,.9,.2,1) both}h1 span:nth-child(2) b{animation-delay:.12s}h1 span:nth-child(3) b{animation-delay:.24s}
+@keyframes up{from{transform:translateY(105%)}}
+.lede{max-width:34em;font-size:20px;color:var(--mut);margin:0 0 30px}
+.cta{display:inline-block;background:var(--acc);color:var(--onacc);font:700 18px Archivo,sans-serif;font-stretch:112%;text-decoration:none;padding:16px 28px;border:2px solid var(--ink);box-shadow:5px 5px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+.cta:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 var(--ink)}.cta:active{transform:translate(4px,4px);box-shadow:1px 1px 0 var(--ink)}
+.note{display:block;margin-top:14px;font-size:15px;color:var(--mut);font-style:italic}
+.job{--ci:var(--cink);--mut:color-mix(in srgb,var(--cink) 65%,var(--card));--line:color-mix(in srgb,var(--cink) 25%,transparent);position:relative;background:var(--card);color:var(--ci);padding:34px 26px 24px;transform:rotate(1.6deg);box-shadow:0 1px 0 #0002,0 14px 30px -10px #0006;animation:drop 1s .35s cubic-bezier(.2,1.3,.4,1) both;border-radius:2px}
+@keyframes drop{from{transform:translateY(-60px) rotate(-6deg);opacity:0}}
+.job::before{content:"";position:absolute;top:-13px;left:50%;width:110px;height:28px;margin-left:-55px;background:color-mix(in srgb,var(--acc2) 80%,transparent);transform:rotate(-3deg);box-shadow:0 1px 2px #0003}
+.job h2{font:800 34px/1 Archivo,sans-serif;font-stretch:75%;margin:0}.job p{margin:4px 0 14px;font-size:15px;color:var(--mut)}
+.job ol{list-style:none;margin:0;padding:0;border-top:2px solid var(--ci)}
+.job li{display:grid;grid-template-columns:24px 1fr auto;gap:10px;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line);font-size:15px}
+.sq{width:20px;height:20px;border:2px solid var(--ci);display:grid;place-items:center;font:800 15px Archivo,sans-serif;color:var(--acc)}
+.job li.on .sq::after{content:"\2713"}.job li.on .sq{animation:th .35s cubic-bezier(.3,1.7,.5,1)}.job li:not(.on){opacity:.6}
+.job em{font-size:13px;font-style:normal;color:var(--mut)}
+@keyframes th{from{transform:scale(2.4) rotate(-20deg);opacity:0}}
+.stamp{position:absolute;right:14px;top:26px;border:4px solid var(--acc);color:var(--acc);font:900 22px Archivo,sans-serif;font-stretch:110%;padding:2px 12px;transform:rotate(11deg);filter:url(#rough);opacity:.88;background:color-mix(in srgb,var(--card) 80%,transparent)}
+.stamp.dn{border-color:var(--ci);color:var(--ci)}.stamp.pop{animation:th .45s cubic-bezier(.3,1.6,.5,1)}
+.nx{margin-top:16px;width:100%;background:var(--ci);color:var(--card);padding:12px;font:700 15px Archivo,sans-serif;font-stretch:110%;cursor:pointer;transition:background .15s,transform .1s}.nx:hover{background:var(--acc);color:var(--onacc)}.nx:active{transform:scale(.98)}
+.band{border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);padding:44px 0}
+.nums{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}@media(max-width:720px){.nums{grid-template-columns:1fr 1fr}}
+.nums b{display:block;font:900 clamp(64px,9vw,116px)/.9 Archivo,sans-serif;font-stretch:70%}.nums div:nth-child(1) b,.nums div:nth-child(3) b{color:var(--acc)}
+.nums span{font-size:16px;color:var(--mut)}
+.sec{padding:88px 0}.sec h2.big{font:900 clamp(44px,7vw,92px)/.9 Archivo,sans-serif;font-stretch:70%;margin:0 0 40px;max-width:11em}
+.fs{border-top:2px solid var(--ink)}
+.f{display:grid;grid-template-columns:90px minmax(0,4fr) minmax(0,6fr);gap:24px;padding:26px 0;border-bottom:1px solid var(--line);position:relative;transition:padding-left .25s}
+.f::before{content:"";position:absolute;left:0;top:0;bottom:0;width:0;background:var(--acc);transition:width .25s}.f:hover{padding-left:20px}.f:hover::before{width:6px}
+@media(max-width:720px){.f{grid-template-columns:1fr;gap:6px}}
+.f i{font:900 54px/1 Archivo,sans-serif;font-stretch:70%;font-style:normal;color:var(--acc)}.f h3{font:800 30px/1.05 Archivo,sans-serif;font-stretch:78%;margin:0}.f p{margin:0;color:var(--mut)}
+.oem{font:800 clamp(34px,6vw,76px)/1.02 Archivo,sans-serif;font-stretch:72%;margin:0}.oem span{transition:color .2s;cursor:default}.oem span:hover{color:var(--acc)}.oem em{color:var(--mut);font-style:normal;font-weight:500}
+.end{background:var(--hero);color:var(--onhero);border-top:8px solid var(--acc2);padding:84px 0;position:relative;overflow:hidden}
+.end h2{font:900 clamp(52px,10vw,132px)/.88 Archivo,sans-serif;font-stretch:68%;margin:0 0 30px;max-width:9em}
+.end .cta{border-color:var(--onhero);box-shadow:5px 5px 0 var(--onhero)}
+footer{padding:24px 0 36px;color:var(--mut);font-size:14px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.rv{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}.rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".06" numOctaves="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3"/></filter></svg>
+<div class="top"><div class="w">
+<nav><div class="mk"><i></i>SAFEX <span>Project Tracker</span></div><div style="display:flex;gap:18px;align-items:center"><div class="pal" id="pal" role="group" aria-label="Colour palette"></div><a class="nl" href="tracker.html">Open the tracker</a></div></nav>
+<section class="hero"><div>
+<h1><span><b>Know where</b></span><span><b>every kit</b></span><span><b>stands.</b></span></h1>
+<p class="lede">One live board for every fire-safety development project, from the first drawing sent to the OEM to handover on the production line. Built for the engineers who chase it.</p>
+<a class="cta" href="tracker.html">Open the tracker</a>
+<span class="note">Opens the live dashboard, synced from the Google Sheet.</span></div>
+<aside><div class="job" aria-label="Sample job card"><div class="stamp" id="stp">At risk</div>
+<h2>P010 · 12M LF Tarmac</h2><p>JBM · FDSS + FAS · Normal priority</p><ol id="st"></ol>
+<button class="nx" id="nx">Stamp the next stage</button></div></aside></section></div></div>
+<section class="band"><div class="w nums" id="nums">
+<div><b class="cnt" data-n="16">0</b><span>development projects on the board</span></div>
+<div><b class="cnt" data-n="6">0</b><span>critical projects still open</span></div>
+<div><b class="cnt" data-n="4">0</b><span>blocked or at risk right now</span></div>
+<div><b class="cnt" data-n="20">0</b><span>new parts tracked against projects</span></div></div></section>
+<section class="sec"><div class="w"><h2 class="big rv">Built for how engineers actually chase work.</h2>
+<div class="fs">
+<div class="f rv"><i>8</i><h3>Eight stages, one line</h3><p>Drawing to OEM, approval, purchase, ERP codes, BOM, dispatch, trial and handover. Every project shows how far it has got and what comes next.</p></div>
+<div class="f rv"><i>!</i><h3>Trouble comes first</h3><p>Blocked and at-risk projects sit at the top with the reason and the number of days they have been stuck, so nothing waits quietly.</p></div>
+<div class="f rv"><i>P</i><h3>Parts and POs in view</h3><p>Every new part is listed against its project. “Awaiting order” stops hiding in a second tab.</p></div>
+<div class="f rv"><i>OK</i><h3>OEM approvals at a glance</h3><p>See which drawings are with the customer, which are approved, and which are still waiting on us.</p></div></div></div></section>
+<section class="sec" style="padding-top:0"><div class="w"><p class="oem rv"><span>EKA</span>, <span>Force</span>, <span>Jakson</span>, <span>JBM</span>, <span>Kalyani</span>, <span>JSW</span>, <span>TML</span>, <span>EMT</span>. <em>Every OEM you are developing for, on one board.</em></p></div></section>
+<section class="end"><div class="w"><h2 class="rv">Your next kit is already on the board.</h2>
+<a class="cta" href="tracker.html">Open the tracker</a></div></section>
+<div class="w"><footer><span>Safex Project Tracker</span><span id="ft">Figures from the tracker as of 29 Oct 2026</span></footer></div>
+<script>
+const S=["Drawing to OEM","OEM approval","Drawing to Purchase","ERP item codes","BOM released","Dispatched","Prototype trial","Handover to production"],DT={0:"27 Aug",1:"10 Sep"};
+let n=2;const $=s=>document.querySelector(s);
+const PL=[["Tokyo roastery","#2C2523","#C66B48"],["Desert minimalist","#1A1512","#DCA482"],["Retro editorial","#E64A33","#F3B643"],["Velvet sunset","#190F0E","#F28D77"]];let pv;try{pv=localStorage.getItem("pal")}catch(e){}
+function setP(i){document.documentElement.dataset.p=i;try{localStorage.setItem("pal",i)}catch(e){}document.querySelectorAll("#pal button").forEach((b,j)=>b.setAttribute("aria-pressed",j+1==i))}
+$("#pal").innerHTML=PL.map(p=>`<button title="${p[0]}" aria-label="${p[0]} palette" style="--s1:${p[1]};--s2:${p[2]}"></button>`).join("");
+document.querySelectorAll("#pal button").forEach((b,j)=>b.onclick=()=>setP(j+1));setP(pv||(matchMedia("(prefers-color-scheme:dark)").matches?4:1));
+function draw(a){$("#st").innerHTML=S.map((s,i)=>`<li class="${i<n?"on":""}"><span class="sq"></span>${s}<em>${i<n?(DT[i]||"Stamped"):"Waiting"}</em></li>`).join("");
+if(a){const l=$("#st").children[n-1];if(l){l.classList.remove("on");void l.offsetWidth;l.classList.add("on")}}
+const t=$("#stp"),d=n===8;t.textContent=d?"Handed over":"At risk";t.classList.toggle("dn",d);t.classList.remove("pop");void t.offsetWidth;t.classList.add("pop");$("#nx").textContent=d?"Start over":"Stamp the next stage"}
+$("#nx").onclick=()=>{n=n===8?2:n+1;draw(true)};draw(false);
+const rm=matchMedia("(prefers-reduced-motion:reduce)").matches;
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;io.unobserve(e.target);const el=e.target;el.classList.add("in");
+if(el.classList.contains("cnt")){const N=+el.dataset.n;if(rm){el.textContent=N;return}const t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/1100);el.textContent=Math.round(N*(1-Math.pow(1-k,3)));k<1&&requestAnimationFrame(f)})(t0)}}),{threshold:.3});
+document.querySelectorAll(".rv").forEach(e=>io.observe(e));
+async function live(){try{const g=async t=>{const x=await(await fetch(`https://docs.google.com/spreadsheets/d/1j-SWtdsom-7nFrwAhxJRyE12Hsm5fktJ3dNU5CdXqLg/gviz/tq?tqx=out:json&headers=1&sheet=${encodeURIComponent(t)}`)).text();return JSON.parse(x.slice(x.indexOf("{"),x.lastIndexOf("}")+1)).table.rows.map(r=>(r.c||[]).map(c=>c?c.v:null))};
+const[p,x]=await Promise.all([g("Development Projects"),g("New Parts")]),P=p.filter(r=>r[1]||r[2]),st=r=>String(r[18]||"").trim();if(!P.length)throw 0;
+const v=[P.length,P.filter(r=>String(r[5]||"")[0]==="A"&&st(r)!=="Done").length,P.filter(r=>["Blocked","At Risk"].includes(st(r))).length,x.filter(r=>r[1]).length];
+document.querySelectorAll(".cnt").forEach((e,i)=>e.dataset.n=v[i]);$("#ft").textContent="Figures live from the tracker"}catch(e){}}
+live().finally(()=>document.querySelectorAll(".cnt").forEach(e=>io.observe(e)));
+</script></body></html>
