@@ -95,6 +95,7 @@ table{border:2px solid var(--ink);border-radius:0}.tw{border:0}th{font:800 13px 
 .toast{font-family:Archivo,sans-serif;border-radius:0}
 .rv{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}.rv.in{opacity:1;transform:none}
 #sync[data-err="1"]{color:var(--acc2);font-weight:600}
+#list{scroll-margin-top:16px}
 </style></head><body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".06" numOctaves="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3"/></filter></svg><div class="top"><div class="wrap">
 <header><div><div class="mk"><i></i>SAFEX <span>Project Tracker</span></div><h1><span><b>Every kit,</b></span><span><b>on one board.</b></span></h1><div class="sub" id="sub"></div><div class="sub" id="sync" style="font-size:14px;margin-top:4px">Connecting to Google Sheets…</div></div><div class="sp"></div>
 <button class="btn" id="rf">Refresh</button><a class="btn" href="https://docs.google.com/spreadsheets/d/1j-SWtdsom-7nFrwAhxJRyE12Hsm5fktJ3dNU5CdXqLg/edit?gid=930686596#gid=930686596" target="_blank" rel="noopener" style="text-decoration:none">Open sheet</a><div class="pal" id="pal" role="group" aria-label="Colour palette"></div></header>
@@ -102,7 +103,7 @@ table{border:2px solid var(--ink);border-radius:0}.tw{border:0}th{font:800 13px 
 <div class="grid"><div class="card"><h2>Needs attention</h2><div class="att" id="att"></div></div>
 <div class="card"><h2>How far projects have got</h2><div class="fn" id="fn"></div></div></div>
 <div class="tools"><div class="tabs" role="tablist"><button role="tab" id="t1" aria-selected="true">Projects</button><button role="tab" id="t2" aria-selected="false">New parts</button></div>
-<input id="q" type="search" placeholder="Search project, customer, model, note…" aria-label="Search"><select id="fp" aria-label="Priority"></select><select id="fc" aria-label="Customer"></select><select id="so" aria-label="Sort"><option value="pri">Sort: priority</option><option value="new">Sort: newest enquiry</option><option value="sev">Sort: needs attention first</option><option value="prog">Sort: most progress</option></select></div>
+<input id="q" type="search" placeholder="Search project, customer, model, note…" aria-label="Search"><select id="fp" aria-label="Priority"></select><select id="fc" aria-label="Customer"></select><select id="so" aria-label="Sort"><option value="status">Sort: status (on track → done)</option><option value="pri">Sort: priority</option><option value="new">Sort: newest enquiry</option><option value="sev">Sort: needs attention first</option><option value="prog">Sort: most progress</option></select></div>
 <div id="list"></div></div>
 <div class="ov" id="ov"></div><aside class="dr" id="dr" aria-label="Project details"></aside><div class="toast" id="ts"></div>
 <script>
@@ -110,7 +111,7 @@ let D={"projects": [{"id": "P001", "oem": "EKA", "model": "9M CESL BUS (FAS UNIT
 const ST=["On Track","At Risk","Blocked","On Hold","Done"],SEV={"Blocked":0,"At Risk":1,"On Track":2,"On Hold":3,"Done":4};
 const MS=["Drawing to OEM","OEM approval","Drawing to Purchase","ERP item codes","BOM released","Dispatched","Prototype trial","Handover to production"];
 const $=s=>document.querySelector(s),esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-let ov={},tab="p",fs="all",first=true;
+let ov={},tab="p",fs="all",pin=null,first=true;const ORD={"On Track":0,"At Risk":1,"Blocked":2,"On Hold":3,"Done":4};
 
 const eff=p=>ov[p.k]||p.status,days=d=>d?Math.floor((Date.now()-new Date(d))/864e5):null;
 const fd=d=>d?new Date(d).toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"}):"—";
@@ -120,7 +121,7 @@ function toast(t){const e=$("#ts");e.textContent=t;e.classList.add("o");setTimeo
 function count(el,n){if(matchMedia("(prefers-reduced-motion:reduce)").matches||!first){el.textContent=n;return}const t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/900);el.textContent=Math.round(n*(1-Math.pow(1-k,3)));k<1&&requestAnimationFrame(f)})(t0)}
 function kpis(){const P=D.projects,c=s=>P.filter(p=>eff(p)===s).length;
 const it=[["all","All projects",P.length],["On Track","On track",c("On Track")],["At Risk","At risk",c("At Risk")],["Blocked","Blocked",c("Blocked")],["Done","Done",c("Done")]];
-$("#kpis").innerHTML=it.map(([s,l,n])=>`<button class="kpi" data-s="${s}" data-f="${s}" aria-pressed="${fs===s}"><span class="num" data-n="${n}">0</span><span>${l}</span></button>`).join("");
+$("#kpis").innerHTML=it.map(([s,l,n])=>`<button class="kpi" data-s="${s}" data-f="${s}" title="${s==="all"?"Reset the list order":"Show "+l.toLowerCase()+" first"}" aria-pressed="${s==="all"?!pin:pin===s}"><span class="num" data-n="${n}">0</span><span>${l}</span></button>`).join("");
 document.querySelectorAll(".kpi .num").forEach(e=>count(e,+e.dataset.n));
 $("#sub").textContent=`${P.length} projects · ${P.filter(p=>p.pri[0]==="A"&&eff(p)!=="Done").length} critical still open · ${D.parts.length} parts tracked`;
 const a=P.filter(p=>["Blocked","At Risk"].includes(eff(p))).sort((x,y)=>SEV[eff(x)]-SEV[eff(y)]);
@@ -131,7 +132,7 @@ function opts(){const P=D.projects;$("#fp").innerHTML='<option value="">All prio
 $("#fc").innerHTML='<option value="">All customers</option>'+[...new Set(P.map(p=>p.oem))].filter(Boolean).sort().map(v=>`<option>${esc(v)}</option>`).join("")}
 function filt(){const q=$("#q").value.toLowerCase(),fp=$("#fp").value,fc=$("#fc").value;
 let r=D.projects.filter(p=>(fs==="all"||eff(p)===fs)&&(!fp||p.pri===fp)&&(!fc||p.oem===fc)&&(!q||[p.id,p.oem,p.model,p.sys,p.owner,p.sales,p.note,p.reason].join(" ").toLowerCase().includes(q)));
-const o=$("#so").value,f={pri:(a,b)=>a.pri.localeCompare(b.pri),new:(a,b)=>(b.enq||"").localeCompare(a.enq||""),sev:(a,b)=>SEV[eff(a)]-SEV[eff(b)]||a.pri.localeCompare(b.pri),prog:(a,b)=>prog(b)-prog(a)}[o];return r.sort(f)}
+const o=$("#so").value,R=s=>ORD[s]??9,f={status:(a,b)=>R(eff(a))-R(eff(b))||a.pri.localeCompare(b.pri),pri:(a,b)=>a.pri.localeCompare(b.pri),new:(a,b)=>(b.enq||"").localeCompare(a.enq||""),sev:(a,b)=>SEV[eff(a)]-SEV[eff(b)]||a.pri.localeCompare(b.pri),prog:(a,b)=>prog(b)-prog(a)}[o];return r.sort((a,b)=>((eff(b)===pin)-(eff(a)===pin))||f(a,b))}
 function render(){
 if(tab==="p"){const r=filt();$("#list").innerHTML=r.length?r.map(p=>{const s=eff(p),n=prog(p),a=days(p.enq);
 return`<button class="row" data-id="${esc(p.k)}" data-s="${s}"><span class="pid">${esc(p.id||"—")}</span><span><span class="mdl">${esc(p.model)}</span><br><span class="oem">${esc(p.oem)} · ${esc(p.sys)} · <span class="${pr(p)}">${esc(p.pri)}</span></span></span>
@@ -153,7 +154,7 @@ $("#ov").classList.add("o");$("#dr").classList.add("o");$("#cl").focus();
 }
 function close(){$("#ov").classList.remove("o");$("#dr").classList.remove("o")}
 document.addEventListener("click",e=>{const t=e.target.closest("[data-id],[data-f],#cl,#ov");if(!t)return;
-if(t.dataset.f){fs=fs===t.dataset.f?"all":t.dataset.f;tab="p";tabs();kpis();render()}else if(t.id==="cl"||t.id==="ov")close();else open(t.dataset.id)});
+if(t.dataset.f){const f=t.dataset.f;pin=f==="all"||pin===f?null:f;tab="p";tabs();kpis();render();$("#list").scrollIntoView({behavior:"smooth",block:"start"})}else if(t.id==="cl"||t.id==="ov")close();else open(t.dataset.id)});
 document.addEventListener("keydown",e=>e.key==="Escape"&&close());
 ["q","fp","fc","so"].forEach(i=>$("#"+i).addEventListener("input",render));
 function tabs(){$("#t1").setAttribute("aria-selected",tab==="p");$("#t2").setAttribute("aria-selected",tab==="x");["fp","fc","so"].forEach(i=>$("#"+i).hidden=tab==="x")}
@@ -174,7 +175,7 @@ let loaded=false;
 async function load(manual){const b=$("#rf"),s=$("#sync");b.disabled=true;s.dataset.err="";s.textContent="Syncing with Google Sheets…";
 try{const[p,x]=await Promise.all([gv(CFG.projects),gv(CFG.parts)]),P=p.map(mapP).filter(q=>q.oem||q.model);if(!P.length)throw 0;D={projects:P,parts:x.map(mapX).filter(q=>q.desc)};
 s.textContent="Live from Google Sheets · synced "+new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});if(manual)toast("Tracker refreshed")}
-catch(e){s.dataset.err="1";s.textContent=loaded?"Couldn’t refresh. Showing the last synced data.":"Couldn’t reach the sheet, so this is a saved copy from "+SNAP+". Share the sheet as “Anyone with the link can view” to go live."}
+catch(e){s.dataset.err="1";s.textContent=loaded?"Couldn’t refresh. Showing the last synced data.":"Couldn’t reach the sheet, so this is a saved copy from "+SNAP+(location.protocol==="file:"?". Open this page from its GitHub Pages address, because browsers block sheet access from a local file.":". Share the sheet as “Anyone with the link can view” to go live.")}
 b.disabled=false;const fp=$("#fp").value,fc=$("#fc").value;prep();opts();$("#fp").value=fp;$("#fc").value=fc;kpis();render();loaded=true}
 $("#rf").onclick=()=>load(true);load();setInterval(()=>{if(!document.hidden)load()},CFG.every);
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.12});document.querySelectorAll(".card,.tools").forEach(e=>{e.classList.add("rv");io.observe(e)});
