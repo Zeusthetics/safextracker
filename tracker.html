@@ -52,7 +52,7 @@ h1{font-size:clamp(26px,4.5vw,40px);font-weight:800;letter-spacing:-.02em;line-h
 [data-s="On Track"]{--c:var(--ok)}[data-s="At Risk"]{--c:var(--risk)}[data-s="Blocked"]{--c:var(--blk)}[data-s="Done"]{--c:var(--done)}[data-s="On Hold"]{--c:var(--hold)}[data-s="all"]{--c:var(--acc)}
 .pa{color:var(--blk)}.pb{color:var(--risk)}.pc{color:var(--mut)}
 table{width:100%;border-collapse:collapse;background:var(--pn);border-radius:10px;overflow:hidden}th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line)}th{background:var(--pn2);font-weight:600;font-size:13px}
-.tw{overflow-x:auto;border:1px solid var(--line);border-radius:10px}.tw table{min-width:640px}.lk{background:none;border:0;color:var(--acc);font-weight:600;padding:0}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:10px}.tw table{min-width:980px}.lk{background:none;border:0;color:var(--acc);font-weight:600;padding:0}
 .empty{padding:34px;text-align:center;color:var(--mut)}
 .ov{position:fixed;inset:0;background:#0008;opacity:0;pointer-events:none;transition:opacity .25s;z-index:20}.ov.o{opacity:1;pointer-events:auto}
 .dr{position:fixed;top:0;right:0;bottom:0;width:min(460px,100%);background:var(--pn);border-left:1px solid var(--line);z-index:21;transform:translateX(100%);transition:transform .35s cubic-bezier(.2,.8,.2,1);overflow:auto;padding:calc(20px + env(safe-area-inset-top,0px)) 20px 30px}.dr.o{transform:none}
@@ -98,7 +98,7 @@ table{border:2px solid var(--ink);border-radius:0}.tw{border:0}th{font:800 13px 
 #list{scroll-margin-top:16px}
 </style></head><body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".06" numOctaves="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3"/></filter></svg><div class="top"><div class="wrap">
 <header><div><div class="mk"><i></i>SAFEX <span>Project Tracker</span></div><h1><span><b>Every kit,</b></span><span><b>on one board.</b></span></h1><div class="sub" id="sub"></div><div class="sub" id="sync" style="font-size:14px;margin-top:4px">Connecting to Google Sheets…</div></div><div class="sp"></div>
-<button class="btn" id="rf">Refresh</button><a class="btn" href="https://docs.google.com/spreadsheets/d/1j-SWtdsom-7nFrwAhxJRyE12Hsm5fktJ3dNU5CdXqLg/edit?gid=930686596#gid=930686596" target="_blank" rel="noopener" style="text-decoration:none">Open sheet</a><div class="pal" id="pal" role="group" aria-label="Colour palette"></div></header>
+<button class="btn" id="rf">Refresh</button><a class="btn" href="https://docs.google.com/spreadsheets/d/1p0IT9SCUBapme9S0K92e12GZklH9M4L1JdSbT0dA8SA/edit?gid=0#gid=0" target="_blank" rel="noopener" style="text-decoration:none">Open sheet</a><div class="pal" id="pal" role="group" aria-label="Colour palette"></div></header>
 <div class="kpis" id="kpis"></div></div></div><div class="wrap">
 <div class="grid"><div class="card"><h2>Needs attention</h2><div class="att" id="att"></div></div>
 <div class="card"><h2>How far projects have got</h2><div class="fn" id="fn"></div></div></div>
@@ -139,8 +139,8 @@ return`<button class="row" data-id="${esc(p.k)}" data-s="${s}"><span class="pid"
 <span class="pipe" title="${n} of 8 stages reached">${MS.map((m,i)=>`<i style="--i:${i}" class="${first?"":(p.m[i]?"on":i===n?"nx":"")}" data-c="${p.m[i]?"on":i===n&&s!=="Done"?"nx":""}"></i>`).join("")}</span><span><span class="chip">${s}</span></span><span class="age">${s!=="Done"&&a!=null?a+"d open":""}</span></button>`}).join(""):'<div class="empty">No projects match these filters. Clear the search or pick “All projects”.</div>';
 if(first){$("#list").classList.add("ani");setTimeout(()=>$("#list").classList.remove("ani"),2600)}
 if(first)requestAnimationFrame(()=>requestAnimationFrame(()=>document.querySelectorAll(".pipe i").forEach(i=>i.className=i.dataset.c)));
-}else{const q=$("#q").value.toLowerCase(),r=D.parts.filter(x=>!q||Object.values(x).join(" ").toLowerCase().includes(q));
-$("#list").innerHTML=`<div class="tw"><table><tr><th>Project</th><th>Part</th><th>Make / buy</th><th>Order status</th><th>Supplier</th><th>PO</th><th>Promised</th></tr>${r.map(x=>`<tr><td><button class="lk" data-id="${esc(x.id)}">${esc(x.id)}</button></td><td>${esc(x.desc)}</td><td>${esc(x.mb)}</td><td><span class="chip" data-s="${x.code?"At Risk":"On Hold"}">${x.code?esc(x.code):"Not started"}</span></td><td>${esc(x.sup||"—")}</td><td>${esc(x.po||"—")}</td><td>${fd(x.prom)}</td></tr>`).join("")}</table></div>`}
+}else{const q=$("#q").value.toLowerCase(),J=id=>D.projects.find(p=>p.id===id)||{},r=D.parts.filter(x=>{const p=J(x.id);return !q||[...Object.values(x),p.oem,p.model,p.sys].join(" ").toLowerCase().includes(q)});
+$("#list").innerHTML=`<div class="tw"><table><tr><th>Project</th><th>OEM</th><th>Vehicle model</th><th>System</th><th>Part</th><th>Make / buy</th><th>Order status</th><th>Supplier</th><th>PO</th><th>Promised</th></tr>${r.map(x=>`<tr><td><button class="lk" data-id="${esc(x.id)}">${esc(x.id)}</button></td><td>${esc(J(x.id).oem||"—")}</td><td>${esc(J(x.id).model||"—")}</td><td>${esc(J(x.id).sys||"—")}</td><td>${esc(x.desc)}</td><td>${esc(x.mb)}</td><td><span class="chip" data-s="${x.code?"At Risk":"On Hold"}">${x.code?esc(x.code):"Not started"}</span></td><td>${esc(x.sup||"—")}</td><td>${esc(x.po||"—")}</td><td>${fd(x.prom)}</td></tr>`).join("")}</table></div>`}
 first=false}
 function open(k){const p=D.projects.find(x=>x.k===k);if(!p)return toast("Project "+k+" has no details yet");const s=eff(p),pa=D.parts.filter(x=>x.id===p.id);
 $("#dr").dataset.s=s;$("#dr").classList.remove("st");void $("#dr").offsetWidth;$("#dr").classList.add("st");$("#dr").innerHTML=`<button class="btn" id="cl">Close</button><h2>${esc(p.model)}</h2><div class="oem">${esc(p.id||"No ID")} · ${esc(p.oem)}</div>
@@ -165,7 +165,7 @@ $("#pal").innerHTML=PL.map(p=>`<button title="${p[0]}" aria-label="${p[0]} palet
 document.querySelectorAll("#pal button").forEach((b,j)=>b.onclick=()=>setP(j+1));setP(pv||(matchMedia("(prefers-color-scheme:dark)").matches?4:1));
 
 tabs();$("#list").innerHTML='<div class="empty">Loading from Google Sheets…</div>';
-const CFG={id:"1j-SWtdsom-7nFrwAhxJRyE12Hsm5fktJ3dNU5CdXqLg",gid:"930686596",projects:"Development Projects",parts:"New Parts",feedP:"Feed Projects",feedX:"Feed Parts",every:300000},SNAP="29 Oct 2026",SHEET="https://docs.google.com/spreadsheets/d/1j-SWtdsom-7nFrwAhxJRyE12Hsm5fktJ3dNU5CdXqLg/edit?gid=930686596#gid=930686596";
+const CFG={id:"1p0IT9SCUBapme9S0K92e12GZklH9M4L1JdSbT0dA8SA",gid:"0",projects:"Development Projects",parts:"New Parts",feedP:"Feed Projects",feedX:"Feed Parts",every:300000},SNAP="29 Oct 2026",SHEET="https://docs.google.com/spreadsheets/d/1p0IT9SCUBapme9S0K92e12GZklH9M4L1JdSbT0dA8SA/edit?gid=0#gid=0";
 const ROW=p=>p.row?`https://docs.google.com/spreadsheets/d/${CFG.id}/edit#gid=${CFG.gid}&range=A${p.row}`:SHEET;
 const toISO=v=>{if(typeof v==="number"&&v>30000&&v<80000)return new Date(Date.UTC(1899,11,30)+v*864e5).toISOString().slice(0,10);const m=/^Date\((\d+),(\d+),(\d+)/.exec(v||"");return m?`${m[1]}-${String(+m[2]+1).padStart(2,"0")}-${String(+m[3]).padStart(2,"0")}`:null},tx=v=>v==null?"":String(v).trim();
 const mapP=({r,n})=>({id:tx(r[0]),oem:tx(r[1]),model:tx(r[2]),sys:tx(r[3]),type:tx(r[4]),pri:tx(r[5]),sales:tx(r[6]),owner:tx(r[7]),enq:toISO(r[8]),sop:toISO(r[9]),m:[10,11,12,13,14,15,16,17].map(i=>toISO(r[i])),status:tx(r[18])||"On Track",reason:tx(r[19]),bs:toISO(r[20])||toISO(r[22]),note:tx(r[21]),row:n});
