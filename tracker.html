@@ -165,18 +165,25 @@ $("#pal").innerHTML=PL.map(p=>`<button title="${p[0]}" aria-label="${p[0]} palet
 document.querySelectorAll("#pal button").forEach((b,j)=>b.onclick=()=>setP(j+1));setP(pv||(matchMedia("(prefers-color-scheme:dark)").matches?4:1));
 
 tabs();$("#list").innerHTML='<div class="empty">Loading from Google Sheets…</div>';
-const CFG={id:"1p0IT9SCUBapme9S0K92e12GZklH9M4L1JdSbT0dA8SA",gid:"0",projects:"Development Projects",parts:"New Parts",feedP:"Feed Projects",feedX:"Feed Parts",every:300000},SNAP="29 Oct 2026",SHEET="https://docs.google.com/spreadsheets/d/1p0IT9SCUBapme9S0K92e12GZklH9M4L1JdSbT0dA8SA/edit?gid=0#gid=0";
+const CFG={id:"1p0IT9SCUBapme9S0K92e12GZklH9M4L1JdSbT0dA8SA",gid:"0",projects:"MAIN TRACKER",parts:"NEW PARTS",feedP:"Feed Projects",feedX:"Feed Parts",every:300000},SNAP="29 Oct 2026",SHEET="https://docs.google.com/spreadsheets/d/1p0IT9SCUBapme9S0K92e12GZklH9M4L1JdSbT0dA8SA/edit?gid=0#gid=0";
 const ROW=p=>p.row?`https://docs.google.com/spreadsheets/d/${CFG.id}/edit#gid=${CFG.gid}&range=A${p.row}`:SHEET;
-const toISO=v=>{if(typeof v==="number"&&v>30000&&v<80000)return new Date(Date.UTC(1899,11,30)+v*864e5).toISOString().slice(0,10);const m=/^Date\((\d+),(\d+),(\d+)/.exec(v||"");return m?`${m[1]}-${String(+m[2]+1).padStart(2,"0")}-${String(+m[3]).padStart(2,"0")}`:null},tx=v=>v==null?"":String(v).trim();
+const MO={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+const csv=s=>{const o=[];let r=[],c="",q=false;for(let i=0;i<s.length;i++){const ch=s[i];if(q){if(ch==='"'){if(s[i+1]==='"'){c+='"';i++}else q=false}else c+=ch}else if(ch==='"')q=true;else if(ch===","){r.push(c);c=""}else if(ch==="\n"||ch==="\r"){if(ch==="\r"&&s[i+1]==="\n")i++;r.push(c);o.push(r);r=[];c=""}else c+=ch}if(c||r.length){r.push(c);o.push(r)}return o};
+const toISO=v=>{const s=String(v??"").trim();let d,m,y,a;
+if(a=/^(\d{4})-(\d{1,2})-(\d{1,2})/.exec(s)){y=+a[1];m=+a[2];d=+a[3]}
+else if(a=/^(\d{1,2})[-\/. ]([A-Za-z]{3,9})[-\/. ,]+(\d{2,4})$/.exec(s)){d=+a[1];m=MO[a[2].slice(0,3).toLowerCase()];y=+a[3]}
+else if(a=/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{2,4})$/.exec(s)){d=+a[1];m=+a[2];y=+a[3]}
+else if(/^\d{5}$/.test(s))return new Date(Date.UTC(1899,11,30)+ +s*864e5).toISOString().slice(0,10);
+else return null;
+if(y<100)y+=2000;if(!m||m>12||d<1||d>31)return null;return `${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`},tx=v=>v==null?"":String(v).trim();
 const mapP=({r,n})=>({id:tx(r[0]),oem:tx(r[1]),model:tx(r[2]),sys:tx(r[3]),type:tx(r[4]),pri:tx(r[5]),sales:tx(r[6]),owner:tx(r[7]),enq:toISO(r[8]),sop:toISO(r[9]),m:[10,11,12,13,14,15,16,17].map(i=>toISO(r[i])),status:tx(r[18])||"On Track",reason:tx(r[19]),bs:toISO(r[20])||toISO(r[22]),note:tx(r[21]),row:n});
 const mapX=({r})=>({id:tx(r[0]),desc:tx(r[1]),mb:tx(r[2]),code:tx(r[3]),po:tx(r[4]),pod:toISO(r[5]),sup:tx(r[6]),qty:tx(r[7]),prom:toISO(r[8]),recv:toISO(r[9]),insp:tx(r[10])});
-async function gv(t){const q=t.startsWith("gid:")?"gid="+t.slice(4):"sheet="+encodeURIComponent(t),r=await fetch(`https://docs.google.com/spreadsheets/d/${CFG.id}/gviz/tq?tqx=out:json&headers=1&${q}`),x=await r.text();let j;try{j=JSON.parse(x.slice(x.indexOf("{"),x.lastIndexOf("}")+1))}catch(e){throw new Error("access_denied")}
-if(j.status!=="ok")throw new Error((j.errors&&j.errors[0]&&j.errors[0].reason)||"gviz");const rows=j.table.rows.map((r,i)=>({r:(r.c||[]).map(c=>c?c.v:null),n:i+2}));rows.l=String(j.table.cols[1]&&j.table.cols[1].label);return rows}
+async function gv(t){const q=t.startsWith("gid:")?"gid="+t.slice(4):"sheet="+encodeURIComponent(t),r=await fetch(`https://docs.google.com/spreadsheets/d/${CFG.id}/gviz/tq?tqx=out:csv&headers=1&${q}`);if(!r.ok)throw new Error("access_denied");const x=await r.text();if(/^\s*(<|\/\*)/.test(x))throw new Error(/access_denied/.test(x)?"access_denied":"gviz");const T=csv(x);if(!T.length)throw new Error("gviz");const rows=T.slice(1).map((r,i)=>({r,n:i+2}));rows.l=String(T[0][1]||"");return rows}
 const pick=async l=>{let er;for(const t of l){try{return await gv(t)}catch(e){er=e}}throw er};
 const why=e=>/access_denied|Failed to fetch|NetworkError|Load failed/i.test(e.message)?"Google is refusing access. Share the sheet as “Anyone with the link can view”.":e.message==="empty"?"The sheet was read but no project rows were found. Check the tab and column order.":"Google replied: "+e.message+". Check the tab names.";
 let loaded=false;
 async function load(manual){const b=$("#rf"),s=$("#sync");b.disabled=true;s.dataset.err="";s.textContent="Syncing with Google Sheets…";
-try{const p=await pick([CFG.feedP,CFG.projects,"gid:"+CFG.gid]);let x=await pick([CFG.feedX,CFG.parts]).catch(()=>[]);if(x.l===p.l)x=[];const P=p.map(mapP).filter(q=>q.oem||q.model);if(!P.length)throw new Error("empty");D={projects:P,parts:x.map(mapX).filter(q=>q.desc)};loaded=true;
+try{const p=await pick([CFG.feedP,CFG.projects,"Development Projects","gid:"+CFG.gid]);let x=await pick([CFG.feedX,CFG.parts,"New Parts"]).catch(()=>[]);if(x.l===p.l)x=[];const P=p.map(mapP).filter(q=>q.oem||q.model);if(!P.length)throw new Error("empty");D={projects:P,parts:x.map(mapX).filter(q=>q.desc)};loaded=true;
 s.textContent=`Live from Google Sheets · ${P.length} projects · synced `+new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})+(x.length?"":" · New Parts tab not found");if(manual)toast("Tracker refreshed")}
 catch(e){s.dataset.err="1";s.textContent=(loaded?"Couldn’t refresh, showing the last synced data. ":"Couldn’t load the sheet. ")+why(e);if(!loaded)D={projects:[],parts:[]}}
 b.disabled=false;const fp=$("#fp").value,fc=$("#fc").value;prep();opts();$("#fp").value=fp;$("#fc").value=fc;kpis();render();
