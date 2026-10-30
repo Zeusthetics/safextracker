@@ -183,7 +183,7 @@ const pick=async l=>{let er;for(const t of l){try{return await gv(t)}catch(e){er
 const why=e=>/access_denied|Failed to fetch|NetworkError|Load failed/i.test(e.message)?"Google is refusing access. Share the sheet as “Anyone with the link can view”.":e.message==="empty"?"The sheet was read but no project rows were found. Check the tab and column order.":"Google replied: "+e.message+". Check the tab names.";
 let loaded=false;
 async function load(manual){const b=$("#rf"),s=$("#sync");b.disabled=true;s.dataset.err="";s.textContent="Syncing with Google Sheets…";
-try{const p=await pick([CFG.feedP,CFG.projects,"Development Projects","gid:"+CFG.gid]);let x=await pick([CFG.feedX,CFG.parts,"New Parts"]).catch(()=>[]);if(x.l===p.l)x=[];const P=p.map(mapP).filter(q=>q.oem||q.model);if(!P.length)throw new Error("empty");D={projects:P,parts:x.map(mapX).filter(q=>q.desc)};loaded=true;
+try{const p=await pick([CFG.feedP,CFG.projects,"Development Projects","gid:"+CFG.gid]);let x=await pick([CFG.feedX,CFG.parts,"New Parts","gid:1631611147"]).catch(()=>[]);if(x.l===p.l)x=[];const P=p.map(mapP).filter(q=>q.oem||q.model);if(!P.length)throw new Error("empty");D={projects:P,parts:x.map(mapX).filter(q=>q.desc)};loaded=true;
 s.textContent=`Live from Google Sheets · ${P.length} projects · synced `+new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})+(x.length?"":" · New Parts tab not found");if(manual)toast("Tracker refreshed")}
 catch(e){s.dataset.err="1";s.textContent=(loaded?"Couldn’t refresh, showing the last synced data. ":"Couldn’t load the sheet. ")+why(e);if(!loaded)D={projects:[],parts:[]}}
 b.disabled=false;const fp=$("#fp").value,fc=$("#fc").value;prep();opts();$("#fp").value=fp;$("#fc").value=fc;kpis();render();
