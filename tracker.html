@@ -96,6 +96,7 @@ table{border:2px solid var(--ink);border-radius:0}.tw{border:0}th{font:800 13px 
 .rv{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}.rv.in{opacity:1;transform:none}
 #sync[data-err="1"]{color:var(--acc2);font-weight:600}
 #list{scroll-margin-top:16px}
+th[data-k]:hover{text-decoration:underline}
 </style></head><body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".06" numOctaves="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3"/></filter></svg><div class="top"><div class="wrap">
 <header><div><div class="mk"><i></i>SAFEX <span>Project Tracker</span></div><h1><span><b>Every kit,</b></span><span><b>on one board.</b></span></h1><div class="sub" id="sub"></div><div class="sub" id="sync" style="font-size:14px;margin-top:4px">Connecting to Google Sheets…</div></div><div class="sp"></div>
 <button class="btn" id="rf">Refresh</button><a class="btn" href="https://docs.google.com/spreadsheets/d/1p0IT9SCUBapme9S0K92e12GZklH9M4L1JdSbT0dA8SA/edit?gid=0#gid=0" target="_blank" rel="noopener" style="text-decoration:none">Open sheet</a><div class="pal" id="pal" role="group" aria-label="Colour palette"></div></header>
@@ -103,7 +104,7 @@ table{border:2px solid var(--ink);border-radius:0}.tw{border:0}th{font:800 13px 
 <div class="grid"><div class="card"><h2>Needs attention</h2><div class="att" id="att"></div></div>
 <div class="card"><h2>How far projects have got</h2><div class="fn" id="fn"></div></div></div>
 <div class="tools"><div class="tabs" role="tablist"><button role="tab" id="t1" aria-selected="true">Projects</button><button role="tab" id="t2" aria-selected="false">New parts</button></div>
-<input id="q" type="search" placeholder="Search project, customer, model, note…" aria-label="Search"><select id="fp" aria-label="Priority"></select><select id="fc" aria-label="Customer"></select><select id="so" aria-label="Sort"><option value="status">Sort: status (on track → done)</option><option value="pri">Sort: priority</option><option value="new">Sort: newest enquiry</option><option value="sev">Sort: needs attention first</option><option value="prog">Sort: most progress</option></select></div>
+<input id="q" type="search" placeholder="Search project, customer, model, note…" aria-label="Search"><select id="fp" aria-label="Priority"></select><select id="fc" aria-label="Customer"></select><select id="so" aria-label="Sort"><option value="status">Sort: status (on track → done)</option><option value="pri">Sort: priority</option><option value="new">Sort: newest enquiry</option><option value="sev">Sort: needs attention first</option><option value="prog">Sort: most progress</option></select><select id="sx" aria-label="Sort parts" hidden><option value="id">Sort: project ID</option><option value="oem">Sort: OEM</option><option value="model">Sort: vehicle model</option><option value="sys">Sort: system</option><option value="part">Sort: part</option><option value="wm">Sort: WM part no.</option><option value="mb">Sort: make / buy</option><option value="status">Sort: order status (awaiting first)</option><option value="sup">Sort: supplier</option><option value="po">Sort: PO</option><option value="prom">Sort: promised date (soonest)</option></select><button class="btn" id="sd" hidden title="Reverse order">A → Z</button></div>
 <div id="list"></div></div>
 <div class="ov" id="ov"></div><aside class="dr" id="dr" aria-label="Project details"></aside><div class="toast" id="ts"></div>
 <script>
@@ -112,6 +113,10 @@ const ST=["On Track","At Risk","Blocked","On Hold","Done"],SEV={"Blocked":0,"At 
 const MS=["Drawing to OEM","OEM approval","Drawing to Purchase","ERP item codes","BOM released","Dispatched","Prototype trial","Handover to production"];
 const $=s=>document.querySelector(s),esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 let ov={},tab="p",fs="all",pin=null,first=true;const ORD={"On Track":0,"At Risk":1,"Blocked":2,"On Hold":3,"Done":4};
+const HD=[["id","Project"],["oem","OEM"],["model","Vehicle model"],["sys","System"],["part","Part"],["wm","WM part no."],["mb","Make / buy"],["status","Order status"],["sup","Supplier"],["po","PO"],["prom","Promised"]];
+let sdir=1;const PJ=id=>D.projects.find(p=>p.id===id)||{},nat=(a,b)=>a.localeCompare(b,undefined,{numeric:true});
+function psort(a,b){const v={id:x=>x.id,oem:x=>PJ(x.id).oem,model:x=>PJ(x.id).model,sys:x=>PJ(x.id).sys,part:x=>x.desc,wm:x=>x.wm,mb:x=>x.mb,status:x=>x.code==="AWAITING ORDER"?"0":x.code?"1":"2",sup:x=>x.sup,po:x=>x.po,prom:x=>x.prom}[$("#sx").value],A=v(a)||"",B=v(b)||"";if(!A&&!B)return nat(a.id,b.id);if(!A)return 1;if(!B)return-1;return sdir*nat(A,B)||nat(a.id,b.id)}
+function setSort(k){if($("#sx").value===k)sdir=-sdir;else{$("#sx").value=k;sdir=1}$("#sd").textContent=sdir>0?"A → Z":"Z → A";render()}
 
 const eff=p=>ov[p.k]||p.status,days=d=>d?Math.floor((Date.now()-new Date(d))/864e5):null;
 const fd=d=>d?new Date(d).toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"}):"—";
@@ -139,9 +144,9 @@ return`<button class="row" data-id="${esc(p.k)}" data-s="${s}"><span class="pid"
 <span class="pipe" title="${n} of 8 stages reached">${MS.map((m,i)=>`<i style="--i:${i}" class="${first?"":(p.m[i]?"on":i===n?"nx":"")}" data-c="${p.m[i]?"on":i===n&&s!=="Done"?"nx":""}"></i>`).join("")}</span><span><span class="chip">${s}</span></span><span class="age">${s!=="Done"&&a!=null?a+"d open":""}</span></button>`}).join(""):'<div class="empty">No projects match these filters. Clear the search or pick “All projects”.</div>';
 if(first){$("#list").classList.add("ani");setTimeout(()=>$("#list").classList.remove("ani"),2600)}
 if(first)requestAnimationFrame(()=>requestAnimationFrame(()=>document.querySelectorAll(".pipe i").forEach(i=>i.className=i.dataset.c)));
-}else{const q=$("#q").value.toLowerCase(),J=id=>D.projects.find(p=>p.id===id)||{},r=D.parts.filter(x=>{const p=J(x.id);return !q||[...Object.values(x),p.oem,p.model,p.sys].join(" ").toLowerCase().includes(q)});
+}else{const q=$("#q").value.toLowerCase(),J=id=>D.projects.find(p=>p.id===id)||{},r=D.parts.filter(x=>{const p=J(x.id);return !q||[...Object.values(x),p.oem,p.model,p.sys].join(" ").toLowerCase().includes(q)}).sort(psort);
 if(!r.length){$("#list").innerHTML=`<div class="empty">${D.parts.length?"No parts match your search.":esc($("#sync").textContent||"No parts yet.")}</div>`;first=false;return}
-$("#list").innerHTML=`<div class="tw"><table><tr><th>Project</th><th>OEM</th><th>Vehicle model</th><th>System</th><th>Part</th><th>WM part no.</th><th>Make / buy</th><th>Order status</th><th>Supplier</th><th>PO</th><th>Promised</th></tr>${r.map(x=>`<tr><td><button class="lk" data-id="${esc(x.id)}">${esc(x.id)}</button></td><td>${esc(J(x.id).oem||"—")}</td><td>${esc(J(x.id).model||"—")}</td><td>${esc(J(x.id).sys||"—")}</td><td>${esc(x.desc)}</td><td>${esc(x.wm||"—")}</td><td>${esc(x.mb)}</td><td><span class="chip" data-s="${x.code?"At Risk":"On Hold"}">${x.code?esc(x.code):"Not started"}</span></td><td>${esc(x.sup||"—")}</td><td>${esc(x.po||"—")}</td><td>${fd(x.prom)}</td></tr>`).join("")}</table></div>`}
+$("#list").innerHTML=`<div class="tw"><table><tr>${HD.map(([k,l])=>`<th data-k="${k}" title="Click to sort" style="cursor:pointer;white-space:nowrap">${l}${$("#sx").value===k?(sdir>0?" ↑":" ↓"):""}</th>`).join("")}</tr>${r.map(x=>`<tr><td><button class="lk" data-id="${esc(x.id)}">${esc(x.id)}</button></td><td>${esc(J(x.id).oem||"—")}</td><td>${esc(J(x.id).model||"—")}</td><td>${esc(J(x.id).sys||"—")}</td><td>${esc(x.desc)}</td><td>${esc(x.wm||"—")}</td><td>${esc(x.mb)}</td><td><span class="chip" data-s="${x.code?"At Risk":"On Hold"}">${x.code?esc(x.code):"Not started"}</span></td><td>${esc(x.sup||"—")}</td><td>${esc(x.po||"—")}</td><td>${fd(x.prom)}</td></tr>`).join("")}</table></div>`}
 first=false}
 function open(k){const p=D.projects.find(x=>x.k===k);if(!p)return toast("Project "+k+" has no details yet");const s=eff(p),pa=D.parts.filter(x=>x.id===p.id);
 $("#dr").dataset.s=s;$("#dr").classList.remove("st");void $("#dr").offsetWidth;$("#dr").classList.add("st");$("#dr").innerHTML=`<button class="btn" id="cl">Close</button><h2>${esc(p.model)}</h2><div class="oem">${esc(p.id||"No ID")} · ${esc(p.oem)}</div>
@@ -157,8 +162,9 @@ function close(){$("#ov").classList.remove("o");$("#dr").classList.remove("o")}
 document.addEventListener("click",e=>{const t=e.target.closest("[data-id],[data-f],#cl,#ov");if(!t)return;
 if(t.dataset.f){const f=t.dataset.f;pin=f==="all"||pin===f?null:f;tab="p";tabs();kpis();render();$("#list").scrollIntoView({behavior:"smooth",block:"start"})}else if(t.id==="cl"||t.id==="ov")close();else open(t.dataset.id)});
 document.addEventListener("keydown",e=>e.key==="Escape"&&close());
-["q","fp","fc","so"].forEach(i=>$("#"+i).addEventListener("input",render));
-function tabs(){$("#t1").setAttribute("aria-selected",tab==="p");$("#t2").setAttribute("aria-selected",tab==="x");["fp","fc","so"].forEach(i=>$("#"+i).hidden=tab==="x")}
+["q","fp","fc","so","sx"].forEach(i=>$("#"+i).addEventListener("input",()=>{if(i==="sx")sdir=1,$("#sd").textContent="A → Z";render()}));$("#sd").onclick=()=>{sdir=-sdir;$("#sd").textContent=sdir>0?"A → Z":"Z → A";render()};
+document.addEventListener("click",e=>{const h=e.target.closest("th[data-k]");if(h)setSort(h.dataset.k)});
+function tabs(){$("#t1").setAttribute("aria-selected",tab==="p");$("#t2").setAttribute("aria-selected",tab==="x");["fp","fc","so"].forEach(i=>$("#"+i).hidden=tab==="x");["sx","sd"].forEach(i=>$("#"+i).hidden=tab!=="x")}
 $("#t1").onclick=()=>{tab="p";tabs();render()};$("#t2").onclick=()=>{tab="x";tabs();render()};
 const PL=[["Tokyo roastery","#2C2523","#C66B48"],["Desert minimalist","#1A1512","#DCA482"],["Retro editorial","#E64A33","#F3B643"],["Velvet sunset","#190F0E","#F28D77"]];let pv;try{pv=localStorage.getItem("pal")}catch(e){}
 function setP(i){document.documentElement.dataset.p=i;try{localStorage.setItem("pal",i)}catch(e){}document.querySelectorAll("#pal button").forEach((b,j)=>b.setAttribute("aria-pressed",j+1==i))}
