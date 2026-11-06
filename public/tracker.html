@@ -312,4 +312,20 @@ const hy=gsap.quickTo("h1","y",{duration:.6,ease:"power3"});let mx=0,my=0;
 const upd=()=>{S.forEach(f=>{f.x(-mx*f.d*500);f.y(-my*f.d*500-scrollY*f.d*1.4)});hy(scrollY*.12)};
 addEventListener("mousemove",e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5;upd()},{passive:true});addEventListener("scroll",upd,{passive:true});
 document.querySelectorAll(".top .btn").forEach(b=>{const x=gsap.quickTo(b,"x",{duration:.4,ease:"power3"}),y=gsap.quickTo(b,"y",{duration:.4,ease:"power3"});b.addEventListener("mousemove",e=>{const r=b.getBoundingClientRect();x((e.clientX-r.left-r.width/2)*.3);y((e.clientY-r.top-r.height/2)*.4)});b.addEventListener("mouseleave",()=>{x(0);y(0)})})}
+
+// Forward pointer activity to the parent WebGL background. Events inside an
+// iframe never bubble into the parent document, so the shader needs this bridge.
+if (window.parent !== window) {
+  const sendPointer = (action, event) => {
+    window.parent.postMessage({
+      source: "safex-tracker-pointer",
+      action,
+      x: event ? event.clientX : 0,
+      y: event ? event.clientY : 0
+    }, window.location.origin);
+  };
+  window.addEventListener("pointermove", event => sendPointer("move", event), { passive: true });
+  window.addEventListener("pointerdown", event => sendPointer("down", event), { passive: true });
+  window.addEventListener("pointerleave", () => sendPointer("leave"), { passive: true });
+}
 </script></body></html>
