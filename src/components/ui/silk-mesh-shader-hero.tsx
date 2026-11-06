@@ -120,7 +120,7 @@ const FONT =
 const CSS =
   FONT +
   ".smh-root{position:relative;width:100%;overflow:hidden;isolation:isolate;background:var(--smh-c0);color:var(--smh-text);font-family:ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif}" +
-  ".smh-root.smh-background-only{position:fixed;inset:0;width:100vw;height:100vh!important;height:100svh!important;z-index:0;pointer-events:none;background:#080307}" +
+  ".smh-root.smh-background-only{position:fixed;inset:0;width:100vw;height:100vh!important;height:100svh!important;z-index:0;pointer-events:none;background:#020814}" +
   ".smh-root.smh-background-only .smh-inner{display:none}" +
   ".smh-root.smh-background-only .smh-canvas{pointer-events:none;cursor:default}" +
   ".smh-root *{box-sizing:border-box}" +
