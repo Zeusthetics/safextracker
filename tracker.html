@@ -97,6 +97,7 @@ table{border:2px solid var(--ink);border-radius:0}.tw{border:0}th{font:800 13px 
 #sync[data-err="1"]{color:var(--acc2);font-weight:600}
 #list{scroll-margin-top:16px}
 th[data-k]:hover{text-decoration:underline}
+[data-s="Not started"]{--c:var(--hold)}[data-s="Awaiting order"]{--c:var(--risk)}[data-s="Ordered"]{--c:var(--ok)}[data-s="Received"]{--c:var(--done)}
 </style></head><body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".06" numOctaves="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3"/></filter></svg><div class="top"><div class="wrap">
 <header><div><div class="mk"><i></i>SAFEX <span>Project Tracker</span></div><h1><span><b>Every kit,</b></span><span><b>on one board.</b></span></h1><div class="sub" id="sub"></div><div class="sub" id="sync" style="font-size:14px;margin-top:4px">Connecting to Google Sheets…</div></div><div class="sp"></div>
 <button class="btn" id="rf">Refresh</button><a class="btn" href="https://docs.google.com/spreadsheets/d/1p0IT9SCUBapme9S0K92e12GZklH9M4L1JdSbT0dA8SA/edit?gid=0#gid=0" target="_blank" rel="noopener" style="text-decoration:none">Open sheet</a><div class="pal" id="pal" role="group" aria-label="Colour palette"></div></header>
@@ -114,8 +115,14 @@ const MS=["Drawing to OEM","OEM approval","Drawing to Purchase","ERP item codes"
 const $=s=>document.querySelector(s),esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 let ov={},tab="p",fs="all",pin=null,first=true;const ORD={"On Track":0,"At Risk":1,"Blocked":2,"On Hold":3,"Done":4};
 const HD=[["id","Project"],["oem","OEM"],["model","Vehicle model"],["sys","System"],["part","Part"],["wm","WM part no."],["mb","Make / buy"],["status","Order status"],["sup","Supplier"],["po","PO"],["prom","Promised"]];
+let ppin=null;const PST=["Not started","Awaiting order","Ordered","Received"],PR={"Awaiting order":0,"Not started":1,"Ordered":2,"Received":3};
+const ps=x=>x.recv?"Received":(x.po&&!/no order/i.test(x.po))?"Ordered":(x.code||/no order/i.test(x.po||""))?"Awaiting order":"Not started";
+function pk(){const c=s=>D.parts.filter(x=>ps(x)===s).length,it=[["all","All parts",D.parts.length],...PST.map(s=>[s,s,c(s)])];
+$("#kpis").innerHTML=it.map(([s,l,n])=>`<button class="kpi" data-s="${s}" data-f="${s}" title="${s==="all"?"Reset the list order":"Show "+l.toLowerCase()+" first"}" aria-pressed="${s==="all"?!ppin:ppin===s}"><span class="num" data-n="${n}">0</span><span>${l}</span></button>`).join("");
+document.querySelectorAll(".kpi .num").forEach(e=>count(e,+e.dataset.n));
+$("#sub").textContent=`${D.parts.length} parts · ${c("Awaiting order")} awaiting order · ${c("Ordered")} ordered · ${c("Received")} received`}
 let sdir=1;const PJ=id=>D.projects.find(p=>p.id===id)||{},nat=(a,b)=>a.localeCompare(b,undefined,{numeric:true});
-function psort(a,b){const v={id:x=>x.id,oem:x=>PJ(x.id).oem,model:x=>PJ(x.id).model,sys:x=>PJ(x.id).sys,part:x=>x.desc,wm:x=>x.wm,mb:x=>x.mb,status:x=>x.code==="AWAITING ORDER"?"0":x.code?"1":"2",sup:x=>x.sup,po:x=>x.po,prom:x=>x.prom}[$("#sx").value],A=v(a)||"",B=v(b)||"";if(!A&&!B)return nat(a.id,b.id);if(!A)return 1;if(!B)return-1;return sdir*nat(A,B)||nat(a.id,b.id)}
+function psort(a,b){if(ppin&&(ps(a)===ppin)!==(ps(b)===ppin))return ps(a)===ppin?-1:1;const v={id:x=>x.id,oem:x=>PJ(x.id).oem,model:x=>PJ(x.id).model,sys:x=>PJ(x.id).sys,part:x=>x.desc,wm:x=>x.wm,mb:x=>x.mb,status:x=>String(PR[ps(x)]),sup:x=>x.sup,po:x=>x.po,prom:x=>x.prom}[$("#sx").value],A=v(a)||"",B=v(b)||"";if(!A&&!B)return nat(a.id,b.id);if(!A)return 1;if(!B)return-1;return sdir*nat(A,B)||nat(a.id,b.id)}
 function setSort(k){if($("#sx").value===k)sdir=-sdir;else{$("#sx").value=k;sdir=1}$("#sd").textContent=sdir>0?"A → Z":"Z → A";render()}
 
 const eff=p=>ov[p.k]||p.status,days=d=>d?Math.floor((Date.now()-new Date(d))/864e5):null;
@@ -124,7 +131,7 @@ const prog=p=>p.m.filter(Boolean).length,pr=p=>({"A":"pa","B":"pb","C":"pc"}[(p.
 function prep(){D.projects.forEach(p=>p.k=p.id||p.model);D.parts.forEach(x=>x.sup&&0)}
 function toast(t){const e=$("#ts");e.textContent=t;e.classList.add("o");setTimeout(()=>e.classList.remove("o"),2200)}
 function count(el,n){if(matchMedia("(prefers-reduced-motion:reduce)").matches||!first){el.textContent=n;return}const t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/900);el.textContent=Math.round(n*(1-Math.pow(1-k,3)));k<1&&requestAnimationFrame(f)})(t0)}
-function kpis(){const P=D.projects,c=s=>P.filter(p=>eff(p)===s).length;
+function kpis(){if(tab==="x")return pk();const P=D.projects,c=s=>P.filter(p=>eff(p)===s).length;
 const it=[["all","All projects",P.length],["On Track","On track",c("On Track")],["At Risk","At risk",c("At Risk")],["Blocked","Blocked",c("Blocked")],["Done","Done",c("Done")]];
 $("#kpis").innerHTML=it.map(([s,l,n])=>`<button class="kpi" data-s="${s}" data-f="${s}" title="${s==="all"?"Reset the list order":"Show "+l.toLowerCase()+" first"}" aria-pressed="${s==="all"?!pin:pin===s}"><span class="num" data-n="${n}">0</span><span>${l}</span></button>`).join("");
 document.querySelectorAll(".kpi .num").forEach(e=>count(e,+e.dataset.n));
@@ -146,7 +153,7 @@ if(first){$("#list").classList.add("ani");setTimeout(()=>$("#list").classList.re
 if(first)requestAnimationFrame(()=>requestAnimationFrame(()=>document.querySelectorAll(".pipe i").forEach(i=>i.className=i.dataset.c)));
 }else{const q=$("#q").value.toLowerCase(),J=id=>D.projects.find(p=>p.id===id)||{},r=D.parts.filter(x=>{const p=J(x.id);return !q||[...Object.values(x),p.oem,p.model,p.sys].join(" ").toLowerCase().includes(q)}).sort(psort);
 if(!r.length){$("#list").innerHTML=`<div class="empty">${D.parts.length?"No parts match your search.":esc($("#sync").textContent||"No parts yet.")}</div>`;first=false;return}
-$("#list").innerHTML=`<div class="tw"><table><tr>${HD.map(([k,l])=>`<th data-k="${k}" title="Click to sort" style="cursor:pointer;white-space:nowrap">${l}${$("#sx").value===k?(sdir>0?" ↑":" ↓"):""}</th>`).join("")}</tr>${r.map(x=>`<tr><td><button class="lk" data-id="${esc(x.id)}">${esc(x.id)}</button></td><td>${esc(J(x.id).oem||"—")}</td><td>${esc(J(x.id).model||"—")}</td><td>${esc(J(x.id).sys||"—")}</td><td>${esc(x.desc)}</td><td>${esc(x.wm||"—")}</td><td>${esc(x.mb)}</td><td><span class="chip" data-s="${x.code?"At Risk":"On Hold"}">${x.code?esc(x.code):"Not started"}</span></td><td>${esc(x.sup||"—")}</td><td>${esc(x.po||"—")}</td><td>${fd(x.prom)}</td></tr>`).join("")}</table></div>`}
+$("#list").innerHTML=`<div class="tw"><table><tr>${HD.map(([k,l])=>`<th data-k="${k}" title="Click to sort" style="cursor:pointer;white-space:nowrap">${l}${$("#sx").value===k?(sdir>0?" ↑":" ↓"):""}</th>`).join("")}</tr>${r.map(x=>`<tr><td><button class="lk" data-id="${esc(x.id)}">${esc(x.id)}</button></td><td>${esc(J(x.id).oem||"—")}</td><td>${esc(J(x.id).model||"—")}</td><td>${esc(J(x.id).sys||"—")}</td><td>${esc(x.desc)}</td><td>${esc(x.wm||"—")}</td><td>${esc(x.mb)}</td><td><span class="chip" data-s="${ps(x)}">${ps(x)}</span>${x.code&&x.code!=="AWAITING ORDER"?`<br><small>${esc(x.code)}</small>`:""}</td><td>${esc(x.sup||"—")}</td><td>${esc(x.po||"—")}</td><td>${fd(x.prom)}</td></tr>`).join("")}</table></div>`}
 first=false}
 function open(k){const p=D.projects.find(x=>x.k===k);if(!p)return toast("Project "+k+" has no details yet");const s=eff(p),pa=D.parts.filter(x=>x.id===p.id);
 $("#dr").dataset.s=s;$("#dr").classList.remove("st");void $("#dr").offsetWidth;$("#dr").classList.add("st");$("#dr").innerHTML=`<button class="btn" id="cl">Close</button><h2>${esc(p.model)}</h2><div class="oem">${esc(p.id||"No ID")} · ${esc(p.oem)}</div>
@@ -160,12 +167,12 @@ $("#ov").classList.add("o");$("#dr").classList.add("o");$("#cl").focus();
 }
 function close(){$("#ov").classList.remove("o");$("#dr").classList.remove("o")}
 document.addEventListener("click",e=>{const t=e.target.closest("[data-id],[data-f],#cl,#ov");if(!t)return;
-if(t.dataset.f){const f=t.dataset.f;pin=f==="all"||pin===f?null:f;tab="p";tabs();kpis();render();$("#list").scrollIntoView({behavior:"smooth",block:"start"})}else if(t.id==="cl"||t.id==="ov")close();else open(t.dataset.id)});
+if(t.dataset.f){const f=t.dataset.f;if(tab==="x")ppin=f==="all"||ppin===f?null:f;else pin=f==="all"||pin===f?null:f;tabs();kpis();render();$("#list").scrollIntoView({behavior:"smooth",block:"start"})}else if(t.id==="cl"||t.id==="ov")close();else open(t.dataset.id)});
 document.addEventListener("keydown",e=>e.key==="Escape"&&close());
 ["q","fp","fc","so","sx"].forEach(i=>$("#"+i).addEventListener("input",()=>{if(i==="sx")sdir=1,$("#sd").textContent="A → Z";render()}));$("#sd").onclick=()=>{sdir=-sdir;$("#sd").textContent=sdir>0?"A → Z":"Z → A";render()};
 document.addEventListener("click",e=>{const h=e.target.closest("th[data-k]");if(h)setSort(h.dataset.k)});
-function tabs(){$("#t1").setAttribute("aria-selected",tab==="p");$("#t2").setAttribute("aria-selected",tab==="x");["fp","fc","so"].forEach(i=>$("#"+i).hidden=tab==="x");["sx","sd"].forEach(i=>$("#"+i).hidden=tab!=="x")}
-$("#t1").onclick=()=>{tab="p";tabs();render()};$("#t2").onclick=()=>{tab="x";tabs();render()};
+function tabs(){$("#t1").setAttribute("aria-selected",tab==="p");$("#t2").setAttribute("aria-selected",tab==="x");["fp","fc","so"].forEach(i=>$("#"+i).hidden=tab==="x");["sx","sd"].forEach(i=>$("#"+i).hidden=tab!=="x");document.querySelector(".grid").style.display=tab==="x"?"none":""}
+$("#t1").onclick=()=>{tab="p";tabs();kpis();render()};$("#t2").onclick=()=>{tab="x";tabs();kpis();render()};
 const PL=[["Tokyo roastery","#2C2523","#C66B48"],["Desert minimalist","#1A1512","#DCA482"],["Retro editorial","#E64A33","#F3B643"],["Velvet sunset","#190F0E","#F28D77"]];let pv;try{pv=localStorage.getItem("pal")}catch(e){}
 function setP(i){document.documentElement.dataset.p=i;try{localStorage.setItem("pal",i)}catch(e){}document.querySelectorAll("#pal button").forEach((b,j)=>b.setAttribute("aria-pressed",j+1==i))}
 $("#pal").innerHTML=PL.map(p=>`<button title="${p[0]}" aria-label="${p[0]} palette" style="--s1:${p[1]};--s2:${p[2]}"></button>`).join("");
