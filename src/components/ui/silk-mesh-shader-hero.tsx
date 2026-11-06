@@ -338,38 +338,18 @@ export default function SilkMeshShaderHero({
       }
     }
 
-    const setPointer = (clientX: number, clientY: number) => {
-      const [x, y] = toShader(clientX - size.left, clientY - size.top, size.w, size.h)
+    const onMove = (e: PointerEvent) => {
+      const [x, y] = toShader(e.clientX - size.left, e.clientY - size.top, size.w, size.h)
       pointer.tx = x
       pointer.ty = y
       pointer.thover = 1
     }
-    const setClick = (clientX: number, clientY: number) => {
-      const [x, y] = toShader(clientX - size.left, clientY - size.top, size.w, size.h)
+    const onLeave = () => (pointer.thover = 0)
+    const onDown = (e: PointerEvent) => {
+      const [x, y] = toShader(e.clientX - size.left, e.clientY - size.top, size.w, size.h)
       click.x = x
       click.y = y
       click.at = performance.now()
-    }
-    const onMove = (e: PointerEvent) => setPointer(e.clientX, e.clientY)
-    const onLeave = () => (pointer.thover = 0)
-    const onDown = (e: PointerEvent) => setClick(e.clientX, e.clientY)
-
-    // Pointer events inside the tracker iframe do not bubble to this window.
-    // The tracker forwards its local coordinates with postMessage; translate
-    // them through the iframe's current viewport position into shader space.
-    const onFramePointer = (event: MessageEvent) => {
-      const data = event.data
-      if (!data || data.source !== "safex-tracker-pointer") return
-      const frame = Array.from(document.querySelectorAll("iframe")).find(
-        (item) => item.contentWindow === event.source,
-      )
-      if (!frame) return
-      const rect = frame.getBoundingClientRect()
-      const x = rect.left + Number(data.x || 0)
-      const y = rect.top + Number(data.y || 0)
-      if (data.action === "down") setClick(x, y)
-      else if (data.action === "leave") onLeave()
-      else setPointer(x, y)
     }
 
     const ro = new ResizeObserver(measure)
@@ -383,7 +363,6 @@ export default function SilkMeshShaderHero({
     reduce.addEventListener("change", sync)
     window.addEventListener("pointermove", onMove, { passive: true })
     window.addEventListener("pointerdown", onDown, { passive: true })
-    window.addEventListener("message", onFramePointer)
     window.addEventListener("blur", onLeave)
     measure()
     sync()
@@ -398,7 +377,6 @@ export default function SilkMeshShaderHero({
       reduce.removeEventListener("change", sync)
       window.removeEventListener("pointermove", onMove)
       window.removeEventListener("pointerdown", onDown)
-      window.removeEventListener("message", onFramePointer)
       window.removeEventListener("blur", onLeave)
       gl.deleteBuffer(buf)
       gl.deleteProgram(prog)
