@@ -143,7 +143,18 @@ h1 span{display:block;overflow:hidden}h1 b{display:inline-block;background:linea
 @media(max-width:460px){.telemetry-meta span{font-size:7px}.telemetry-visual{padding:10px 8px}.process-svg{min-height:100px}.telemetry-title{font-size:23px}.mk{margin-bottom:12px}header{align-items:flex-start}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
 
-</style></head><body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".06" numOctaves="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3"/></filter></svg><div class="wipe"></div><div class="wipe w2"></div><div class="top"><div class="fx" aria-hidden="true"><i class="s a" data-d=".05" style="right:7%;top:12%"></i><i class="s b" data-d=".1" style="right:22%;top:44%"></i><i class="s c" data-d=".16" style="right:4%;top:50%"></i><i class="s e" data-d=".08" style="right:36%;top:10%"></i><i class="s f" data-d=".12" style="right:15%;top:6%"></i><i class="s d" data-d=".2" style="right:30%;top:72%"></i></div><div class="wrap">
+
+/* Silk shader integration: keep the embedded tracker glass-like so the animated
+   WebGL background from the React shell remains visible behind the controls. */
+html.embedded-tracker,html.embedded-tracker body{background:transparent!important}
+.card,.kpi,.btn,.ai,.dr,.box,.tools,.tw{
+  background-color:color-mix(in srgb,var(--pn) 78%,transparent)!important;
+  -webkit-backdrop-filter:blur(12px);
+  backdrop-filter:blur(12px);
+}
+table{background-color:color-mix(in srgb,var(--pn) 78%,transparent)!important}
+th{background-color:color-mix(in srgb,var(--pn2) 82%,transparent)!important}
+</style><script>if(window.self!==window.top)document.documentElement.classList.add("embedded-tracker");</script></head><body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".06" numOctaves="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3"/></filter></svg><div class="wipe"></div><div class="wipe w2"></div><div class="top"><div class="fx" aria-hidden="true"><i class="s a" data-d=".05" style="right:7%;top:12%"></i><i class="s b" data-d=".1" style="right:22%;top:44%"></i><i class="s c" data-d=".16" style="right:4%;top:50%"></i><i class="s e" data-d=".08" style="right:36%;top:10%"></i><i class="s f" data-d=".12" style="right:15%;top:6%"></i><i class="s d" data-d=".2" style="right:30%;top:72%"></i></div><div class="wrap">
 <header><div><div class="mk"><i></i>SAFEX <span>Project Tracker</span></div><h1><span><b>Every kit,</b></span><span><b>on one board.</b></span></h1><div class="sub" id="sub"></div><div class="sub" id="sync" style="font-size:14px;margin-top:4px">Connecting to Google Sheets…</div></div><div class="sp"></div>
 <button class="btn" id="rf">Refresh</button><a class="btn" href="https://docs.google.com/spreadsheets/d/1p0IT9SCUBapme9S0K92e12GZklH9M4L1JdSbT0dA8SA/edit?gid=0#gid=0" target="_blank" rel="noopener" style="text-decoration:none">Open sheet</a><div class="pal" id="pal" role="group" aria-label="Colour palette"></div></header>
 <section class="telemetry" aria-label="Engineering telemetry overview">

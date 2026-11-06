@@ -11,6 +11,9 @@ import {
   Wrench,
 } from "lucide-react";
 import { SideFolder } from "@/components/ui/side-folder";
+import SilkMeshShaderHero from "@/components/ui/silk-mesh-shader-hero";
+
+const TRACKER_URL = `${import.meta.env.BASE_URL}tracker.html`;
 
 const SHEET_URL =
   "https://docs.google.com/spreadsheets/d/1p0IT9SCUBapme9S0K92e12GZklH9M4L1JdSbT0dA8SA/edit?gid=0#gid=0";
@@ -74,12 +77,21 @@ function App() {
   }, []);
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#06111f] text-slate-100">
-      <div className="pointer-events-none fixed inset-0 engineering-grid opacity-40" />
-      <div className="pointer-events-none fixed -right-48 -top-48 h-[34rem] w-[34rem] rounded-full bg-cyan-400/10 blur-[120px]" />
-      <div className="pointer-events-none fixed -left-48 top-[38rem] h-[30rem] w-[30rem] rounded-full bg-blue-500/10 blur-[120px]" />
+    <main className="relative min-h-screen overflow-x-hidden bg-[#06111f] text-slate-100">
+      <SilkMeshShaderHero
+        backgroundOnly
+        palette={{
+          colors: ["#020814", "#07314a", "#0b6079", "#9beafa"],
+          text: "#eafcff",
+        }}
+        speed={0.52}
+        mesh={0.28}
+        rings
+        className="smh-background-only"
+      />
+      <div className="pointer-events-none fixed inset-0 z-[1] engineering-grid opacity-25" />
 
-      <div className="relative mx-auto max-w-[1440px] px-4 pb-12 pt-5 sm:px-7 lg:px-10">
+      <div className="relative z-10 mx-auto max-w-[1440px] px-4 pb-12 pt-5 sm:px-7 lg:px-10">
         <header className="flex flex-wrap items-center justify-between gap-4 border-b border-cyan-100/10 pb-5">
           <a href="#" className="group flex items-center gap-3 no-underline">
             <div className="grid h-11 w-11 place-items-center rounded-xl border border-cyan-300/30 bg-cyan-300/10 text-cyan-200 shadow-[0_0_28px_rgba(34,211,238,.12)]">
@@ -237,7 +249,7 @@ function App() {
                 Google Sheets source
               </span>
               <a
-                href="./tracker.html"
+                href={TRACKER_URL}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-1.5 rounded-md border border-slate-500/30 px-3 py-1.5 text-xs font-semibold text-slate-300 transition hover:border-cyan-200/40 hover:text-cyan-100"
@@ -250,10 +262,10 @@ function App() {
 
           <iframe
             ref={frameRef}
-            src="./tracker.html"
+            src={TRACKER_URL}
             title="SAFEX engineering project and parts tracker"
-            className="block w-full border-0 bg-[#07111f]"
-            style={{ minHeight: 920 }}
+            className="block w-full border-0 bg-transparent"
+            style={{ minHeight: 920, background: "transparent" }}
             loading="eager"
           />
         </section>
