@@ -84,7 +84,7 @@ function App() {
       <main className="relative min-h-screen overflow-x-hidden bg-transparent text-slate-100">
         <SilkMeshShaderHero
           backgroundOnly
-          palette={{ colors: ["#020814", "#07314a", "#0b6079", "#9beafa"], text: "#eafcff" }}
+          palette={{ colors: ["#080307", "#350713", "#9e102b", "#ff6b78"], text: "#fff0f2" }}
           speed={0.52}
           mesh={0.28}
           rings
@@ -108,8 +108,8 @@ function App() {
       <SilkMeshShaderHero
         backgroundOnly
         palette={{
-          colors: ["#020814", "#07314a", "#0b6079", "#9beafa"],
-          text: "#eafcff",
+          colors: ["#080307", "#350713", "#9e102b", "#ff6b78"],
+          text: "#fff0f2",
         }}
         speed={0.52}
         mesh={0.28}
