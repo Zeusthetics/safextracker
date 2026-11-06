@@ -144,16 +144,34 @@ h1 span{display:block;overflow:hidden}h1 b{display:inline-block;background:linea
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
 
 
-/* Silk shader integration: keep the embedded tracker glass-like so the animated
-   WebGL background from the React shell remains visible behind the controls. */
-html.embedded-tracker,html.embedded-tracker body{background:transparent!important}
-.card,.kpi,.btn,.ai,.dr,.box,.tools,.tw{
-  background-color:color-mix(in srgb,var(--pn) 78%,transparent)!important;
-  -webkit-backdrop-filter:blur(12px);
-  backdrop-filter:blur(12px);
+/* Silk shader integration: the React shell supplies the same animated WebGL
+   background for the embedded and separately opened tracker. Keep every major
+   tracker surface translucent; opaque gradients here would hide the shader. */
+html.embedded-tracker,html.embedded-tracker body{background:transparent!important;background-color:transparent!important}
+html.embedded-tracker body::after{opacity:.035;mix-blend-mode:screen}
+html.embedded-tracker .top{
+  background:linear-gradient(115deg,rgba(5,19,33,.68),rgba(4,14,27,.52) 58%,rgba(5,24,39,.66))!important;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)
 }
-table{background-color:color-mix(in srgb,var(--pn) 78%,transparent)!important}
-th{background-color:color-mix(in srgb,var(--pn2) 82%,transparent)!important}
+html.embedded-tracker .telemetry{
+  background:linear-gradient(115deg,rgba(10,32,51,.62),rgba(9,25,42,.48))!important;
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)
+}
+html.embedded-tracker .telemetry-visual{background:rgba(3,14,26,.34)!important;backdrop-filter:blur(8px)}
+html.embedded-tracker .kpi{background:linear-gradient(145deg,rgba(14,38,59,.58),rgba(8,25,42,.42))!important;backdrop-filter:blur(12px)}
+html.embedded-tracker .card{background:linear-gradient(145deg,rgba(12,32,51,.62),rgba(8,24,40,.48))!important;backdrop-filter:blur(14px)}
+html.embedded-tracker .tools{background:rgba(9,27,44,.62)!important;backdrop-filter:blur(16px)}
+html.embedded-tracker .tabs{background:rgba(7,24,39,.5)!important;backdrop-filter:blur(12px)}
+html.embedded-tracker .row{background:linear-gradient(100deg,rgba(13,35,54,.58),rgba(9,27,44,.44))!important;backdrop-filter:blur(10px)}
+html.embedded-tracker .row:hover{background:linear-gradient(100deg,rgba(17,48,70,.72),rgba(10,31,49,.6))!important}
+html.embedded-tracker .btn,html.embedded-tracker .ai,html.embedded-tracker .box,
+html.embedded-tracker .dr,html.embedded-tracker .tw,html.embedded-tracker table{
+  background-color:rgba(9,27,44,.62)!important;
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)
+}
+html.embedded-tracker .dr{background:linear-gradient(160deg,rgba(16,40,61,.94),rgba(9,27,45,.92))!important}
+html.embedded-tracker th{background:rgba(16,43,66,.88)!important;backdrop-filter:blur(12px)}
+html.embedded-tracker .box{background:rgba(15,42,62,.65)!important}
 </style><script>if(window.self!==window.top)document.documentElement.classList.add("embedded-tracker");</script></head><body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".06" numOctaves="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3"/></filter></svg><div class="wipe"></div><div class="wipe w2"></div><div class="top"><div class="fx" aria-hidden="true"><i class="s a" data-d=".05" style="right:7%;top:12%"></i><i class="s b" data-d=".1" style="right:22%;top:44%"></i><i class="s c" data-d=".16" style="right:4%;top:50%"></i><i class="s e" data-d=".08" style="right:36%;top:10%"></i><i class="s f" data-d=".12" style="right:15%;top:6%"></i><i class="s d" data-d=".2" style="right:30%;top:72%"></i></div><div class="wrap">
 <header><div><div class="mk"><i></i>SAFEX <span>Project Tracker</span></div><h1><span><b>Every kit,</b></span><span><b>on one board.</b></span></h1><div class="sub" id="sub"></div><div class="sub" id="sync" style="font-size:14px;margin-top:4px">Connecting to Google Sheets…</div></div><div class="sp"></div>
 <button class="btn" id="rf">Refresh</button><a class="btn" href="https://docs.google.com/spreadsheets/d/1p0IT9SCUBapme9S0K92e12GZklH9M4L1JdSbT0dA8SA/edit?gid=0#gid=0" target="_blank" rel="noopener" style="text-decoration:none">Open sheet</a><div class="pal" id="pal" role="group" aria-label="Colour palette"></div></header>

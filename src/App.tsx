@@ -14,6 +14,7 @@ import { SideFolder } from "@/components/ui/side-folder";
 import SilkMeshShaderHero from "@/components/ui/silk-mesh-shader-hero";
 
 const TRACKER_URL = `${import.meta.env.BASE_URL}tracker.html`;
+const STANDALONE_TRACKER_URL = `${import.meta.env.BASE_URL}?view=tracker`;
 
 const SHEET_URL =
   "https://docs.google.com/spreadsheets/d/1p0IT9SCUBapme9S0K92e12GZklH9M4L1JdSbT0dA8SA/edit?gid=0#gid=0";
@@ -76,8 +77,34 @@ function App() {
     };
   }, []);
 
+  const standaloneTracker = new URLSearchParams(window.location.search).get("view") === "tracker";
+
+  if (standaloneTracker) {
+    return (
+      <main className="relative min-h-screen overflow-x-hidden bg-transparent text-slate-100">
+        <SilkMeshShaderHero
+          backgroundOnly
+          palette={{ colors: ["#020814", "#07314a", "#0b6079", "#9beafa"], text: "#eafcff" }}
+          speed={0.52}
+          mesh={0.28}
+          rings
+          className="smh-background-only"
+        />
+        <div className="pointer-events-none fixed inset-0 z-[1] engineering-grid opacity-25" />
+        <iframe
+          ref={frameRef}
+          src={TRACKER_URL}
+          title="SAFEX engineering project and parts tracker"
+          className="relative z-10 block w-full border-0 bg-transparent"
+          style={{ minHeight: "100vh", background: "transparent" }}
+          loading="eager"
+        />
+      </main>
+    );
+  }
+
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-[#06111f] text-slate-100">
+    <main className="relative min-h-screen overflow-x-hidden bg-transparent text-slate-100">
       <SilkMeshShaderHero
         backgroundOnly
         palette={{
@@ -227,7 +254,7 @@ function App() {
         <section
           ref={trackerRef}
           id="tracker"
-          className="scroll-mt-5 overflow-hidden rounded-2xl border border-cyan-100/15 bg-[#0b1a2a] shadow-[0_28px_90px_rgba(0,0,0,.38)]"
+          className="scroll-mt-5 overflow-hidden rounded-2xl border border-cyan-100/15 bg-[#0b1a2a]/55 shadow-[0_28px_90px_rgba(0,0,0,.38)] backdrop-blur-xl"
         >
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-cyan-100/10 px-4 py-4 sm:px-6">
             <div className="flex items-center gap-3">
@@ -249,7 +276,7 @@ function App() {
                 Google Sheets source
               </span>
               <a
-                href={TRACKER_URL}
+                href={STANDALONE_TRACKER_URL}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-1.5 rounded-md border border-slate-500/30 px-3 py-1.5 text-xs font-semibold text-slate-300 transition hover:border-cyan-200/40 hover:text-cyan-100"
