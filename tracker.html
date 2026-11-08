@@ -4,12 +4,12 @@
 <meta name="theme-color" content="#05070A">
 <title>Safex Project Intelligence</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Unbounded:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&display=swap">
 <style>
 :root{
---bg:#05070A;--bg2:#0A0E13;--ink:#E9EEF3;--mut:#8A96A3;--dim:#56616D;
+--bg:#05070A;--bg2:#0A0E13;--ink:#151719;--mut:#777E85;--dim:#56616D;
 --line:rgba(170,195,220,.12);--line2:rgba(170,195,220,.24);
---acc:#34D6FF;--ok:#3DDC97;--risk:#F5B544;--blk:#FF5D5D;--done:#8EA2FF;--hold:#6F7B88;
+--acc:#245BFF;--ok:#3DDC97;--risk:#F5B544;--blk:#FF5D5D;--done:#8EA2FF;--hold:#6F7B88;
 --f-d:"Unbounded","Syne",system-ui,sans-serif;--f-b:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
 --pad:clamp(20px,4vw,64px);--max:1360px;--ease:cubic-bezier(.2,.8,.2,1);--expo:cubic-bezier(.16,1,.3,1);
 color-scheme:dark}
@@ -351,12 +351,122 @@ footer .big{font:500 clamp(28px,5vw,64px)/1 var(--f-d);letter-spacing:-.05em;col
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}}
 html.rm *{animation:none!important;transition-duration:.01ms!important}
 
+/* ===== SAFEX light redesign: tokens + component overrides ===== */
+:root{--bg:#F5F6F3;--bg2:#fff;--ink:#151719;--mut:#777E85;--dim:#9AA1A7;--line:rgba(21,23,25,.09);--line2:rgba(21,23,25,.16);--acc:#245BFF;--cy:#19B8D9;--ok:#1F9D6B;--risk:#D98A12;--blk:#D64545;--done:#5B6CFF;--hold:#8A9199;
+--f-d:"Space Grotesk","Inter",system-ui,sans-serif;--f-b:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:light}
+::selection{background:var(--acc);color:#fff}
+.grain{display:none}
+.bg{background:radial-gradient(1000px 640px at 88% -10%,rgba(36,91,255,.09),transparent 60%),radial-gradient(800px 500px at -5% 40%,rgba(25,184,217,.06),transparent 60%),var(--bg)}
+.bg-grid{opacity:.5}
+.nav.s{background:rgba(245,246,243,.82)}
+.hero::after{background:linear-gradient(0deg,var(--bg) 0%,transparent 22%)}
+.h1{text-transform:uppercase;font-weight:500;letter-spacing:-.045em}
+.lede,.cap p{color:#4A5258}
+.btn{background:#fff;border-color:var(--line2)}
+.btn.solid,.seg button[aria-selected=true],.seg button[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:#fff}
+.panel,.pc,.tw,.gt-wrap,.menu,.tools input,.dr,.pal-box,.cmpm-box,.tip3,th,.fchip button{background:#fff;border-color:var(--line);color:var(--ink)}
+.panel,.pc,.tw,.gt-wrap{border-radius:14px;box-shadow:0 1px 2px rgba(21,23,25,.04),0 14px 34px -22px rgba(21,23,25,.2)}
+.pc:hover{box-shadow:0 26px 50px -26px rgba(36,91,255,.3),0 0 0 1px color-mix(in srgb,var(--c) 30%,transparent)}
+.dr,.pal-box,.cmpm-box,.menu,.tip3{box-shadow:0 30px 80px -24px rgba(21,23,25,.28)}
+.dr-top{background:linear-gradient(180deg,#fff 70%,transparent)}
+.toast{background:var(--ink);color:#fff}
+.hf .num,.kt .num{font-weight:500}
+.hs{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+.hs button{position:absolute;left:0;top:0;width:0;height:0;padding:0;border:0;background:none;opacity:0;transition:opacity .6s;will-change:transform}
+html.hm1 .hs button,html.hm2 .hs button{opacity:1;pointer-events:auto}
+.hs i{position:absolute;left:-6px;top:-6px;width:12px;height:12px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 4px rgba(36,91,255,.18);animation:hsp 2.2s infinite}
+.hs u{position:absolute;left:6px;top:0;width:36px;height:1px;background:var(--acc);transform-origin:left;animation:hsl .9s var(--expo) both}
+.hs span{position:absolute;left:44px;top:-15px;white-space:nowrap;background:#fff;border:1px solid var(--line2);border-radius:10px;padding:5px 10px;box-shadow:0 10px 24px -14px rgba(21,23,25,.3);text-align:left}
+.hs b{display:block;font:500 11px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em;text-transform:uppercase;color:var(--ink)}
+.hs small{display:none;font:400 11px/1.3 var(--f-b);color:var(--mut)}
+html.hm2 .hs small{display:block}
+.hs button.l u{left:auto;right:6px;transform-origin:right}.hs button.l span{left:auto;right:44px}
+@keyframes hsp{50%{box-shadow:0 0 0 9px rgba(36,91,255,0)}}@keyframes hsl{from{transform:scaleX(0)}}
+.hmodes{position:absolute;z-index:4;right:var(--pad);bottom:clamp(120px,17vh,160px);display:flex;gap:4px;padding:4px;background:rgba(255,255,255,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line2);border-radius:999px}
+.hmodes button{border:0;background:none;padding:8px 15px;border-radius:999px;font:500 12.5px var(--f-b);color:var(--mut);transition:background .3s,color .3s}
+.hmodes button:hover{color:var(--ink)}.hmodes button[aria-pressed=true]{background:var(--ink);color:#fff}
+html.no3d .hmodes,html.no3d .hs{display:none}
+@media(max-width:800px){.hmodes{right:auto;left:var(--pad);bottom:auto;top:74px}.hs span{display:none}}
+@media(prefers-reduced-motion:reduce){.hs i,.hs u{animation:none}}
+
+
 @media print{
  body{background:#fff;color:#000}.bg,.grain,.nav,.hero,.cur,.tray,.toast,.ld,.dr,.ovl,.pal,.cmpm,.tools,.menu{display:none!important}
  .sec{padding-top:24px}.panel,.pc{background:#fff;border-color:#bbb;color:#000;break-inside:avoid;backdrop-filter:none}
  .kt .num,.pid,h2,h3{color:#000}.hint,.kt .lb,.pc-meta,.pc-stage{color:#444}
  .gt-wrap,.tw{border-color:#bbb;background:#fff}th{background:#eee;color:#000;position:static}
 }
+
+
+
+/* ===== SAFEX cinematic motion pass: dark/light rhythm + depth ===== */
+:root{--bg:#f1f3f4;--bg2:#fff;--ink:#15191f;--mut:#68727d;--dim:#8c96a0;--line:rgba(21,25,31,.11);--line2:rgba(21,25,31,.2);--acc:#315dff;--cy:#20c9e8}
+body{background:#f1f3f4}
+.bg{background:radial-gradient(900px 580px at 78% 8%,rgba(45,99,255,.075),transparent 62%),#f1f3f4}
+.bg-grid{opacity:.28}
+.grain{display:block;opacity:.035}
+.hero{isolation:isolate;background:radial-gradient(ellipse at 72% 48%,rgba(22,71,122,.34),transparent 42%),radial-gradient(ellipse at 78% 82%,rgba(20,174,211,.11),transparent 38%),linear-gradient(115deg,#070b12 0%,#0b1420 54%,#080d15 100%)}
+.hero::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 70% 45%,transparent 0%,rgba(1,5,10,.12) 48%,rgba(1,5,10,.65) 100%);}
+.hero::after{background:linear-gradient(90deg,rgba(5,8,14,.9) 0%,rgba(5,8,14,.56) 35%,rgba(5,8,14,.04) 68%),linear-gradient(0deg,#080d15 0%,rgba(8,13,21,.45) 14%,transparent 44%)}
+#gl{z-index:1;filter:drop-shadow(0 28px 44px rgba(0,0,0,.35))}
+.hero-copy,.hero-foot,.cap,.hmodes{z-index:4}
+.hero .h1{color:#f5f8fc;text-shadow:0 8px 38px rgba(0,0,0,.28)}
+.hero .lede{color:#b5c3d2}
+.hero .hf .num{color:#f5f8fc}
+.hero .hf span:last-child,.hero .hf-note{color:#94a4b6}
+.hero .hero-foot{border-color:rgba(211,229,247,.18)}
+.hero .btn:not(.solid){color:#eaf2fb;background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.22);backdrop-filter:blur(12px)}
+.hero .btn.solid{background:#315dff;border-color:#315dff;color:white;box-shadow:0 12px 36px rgba(49,93,255,.3)}
+.hero .btn:hover{transform:translateY(-3px)}
+.hero .hmodes{background:rgba(9,16,26,.78);border-color:rgba(255,255,255,.17);box-shadow:0 18px 50px rgba(0,0,0,.24)}
+.hero .hmodes button{color:#9aabba}.hero .hmodes button[aria-pressed=true]{background:#315dff;color:white}
+.hero .cap h3{color:#f4f8fc}.hero .cap p{color:#aebdcb}
+html.no3d .gl-fb{filter:drop-shadow(0 0 28px rgba(40,139,255,.4))}
+/* A contrasting dark interlude gives the page a deliberate visual rhythm. */
+#attention{max-width:none;padding-left:max(var(--pad),calc((100vw - var(--max))/2));padding-right:max(var(--pad),calc((100vw - var(--max))/2));padding-top:clamp(84px,10vw,140px);padding-bottom:clamp(84px,10vw,140px);margin-top:clamp(80px,10vw,140px);background:radial-gradient(900px 520px at 85% 10%,rgba(38,91,255,.16),transparent 60%),linear-gradient(125deg,#0a1019,#111c2a 70%,#0a111a);color:#f4f7fb}
+#attention .sec-head{border-color:rgba(255,255,255,.16)}
+#attention .sec-head h2,#attention .sec-head p{color:#f4f7fb}
+#attention .sec-head p,#attention .hint{color:#a7b4c3}
+#attention .panel,#attention .pc,#attention .tw,#attention .gt-wrap{background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.14);color:#eef4fa;box-shadow:0 20px 55px rgba(0,0,0,.18);backdrop-filter:blur(14px)}
+#attention .panel h3,#attention .panel strong{color:#f5f8fc}
+#attention .panel .hint,#attention .panel p{color:#aab8c7}
+#attention svg text{fill:#e8eff8}
+#attention .pc:hover{background:rgba(255,255,255,.09)}
+/* Motion details: layered atmospheric light, moving grid and responsive section reveals. */
+.hero:after{animation:heroShade 12s ease-in-out infinite alternate}
+@keyframes heroShade{from{opacity:.84}to{opacity:1}}
+.hero:before{background-size:140% 140%;animation:heroAtmosphere 18s ease-in-out infinite alternate}
+@keyframes heroAtmosphere{0%{background-position:20% 50%}100%{background-position:80% 50%}}
+#gl{will-change:transform;animation:canvasBreath 9s ease-in-out infinite alternate}
+@keyframes canvasBreath{from{transform:scale(1)}to{transform:scale(1.018)}}
+.panel,.pc,.tw{transition:transform .55s cubic-bezier(.2,.75,.2,1),box-shadow .55s,border-color .4s,background .4s}
+.panel:hover{transform:translateY(-3px)}
+.sec-head h2 .ln{perspective:700px}
+@media(max-width:800px){.hero{min-height:720px}.hero::after{background:linear-gradient(0deg,#080d15 0%,rgba(8,13,21,.72) 35%,rgba(8,13,21,.12) 100%)}#attention{padding-left:var(--pad);padding-right:var(--pad)}}
+@media(prefers-reduced-motion:reduce){.hero:before,.hero:after,#gl{animation:none!important}}
+
+
+/* ===== Phase 2: system explorer + live milestone story ===== */
+.phase2{padding-top:clamp(70px,9vw,120px)}
+.sys-layout{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(280px,.7fr);gap:14px;min-height:490px}
+.sys-visual{position:relative;overflow:hidden;min-height:490px;border-radius:18px;background:radial-gradient(ellipse at 74% 44%,rgba(35,99,180,.32),transparent 42%),linear-gradient(140deg,#09111c,#101e2c 60%,#09121c);color:#f5f8fc;padding:28px;isolation:isolate}
+.sys-visual:before{content:"";position:absolute;inset:0;z-index:-1;opacity:.24;background-image:linear-gradient(rgba(155,193,226,.16) 1px,transparent 1px),linear-gradient(90deg,rgba(155,193,226,.16) 1px,transparent 1px);background-size:38px 38px;mask-image:linear-gradient(120deg,#000,transparent 78%)}
+.sys-visual:after{content:"";position:absolute;right:-8%;top:12%;width:68%;height:70%;border:1px solid rgba(87,178,255,.22);border-radius:50%;transform:rotate(-24deg);box-shadow:0 0 70px rgba(30,129,255,.1),inset 0 0 70px rgba(30,129,255,.06);pointer-events:none}
+.sys-kicker,.eyebrow{font:600 10px/1.2 ui-monospace,monospace;letter-spacing:.16em;color:#83a4c5}
+.sys-watermark{position:absolute;right:26px;top:22px;font:500 13px var(--f-d);color:rgba(255,255,255,.25)}
+.sys-orbit{position:absolute;right:5%;top:14%;width:56%;aspect-ratio:1;border:1px solid rgba(70,160,255,.16);border-radius:50%;animation:sysorbit 36s linear infinite}.sys-orbit:before,.sys-orbit:after{content:"";position:absolute;inset:13%;border:1px dashed rgba(70,160,255,.2);border-radius:50%}.sys-orbit:after{inset:29%;border-style:solid}@keyframes sysorbit{to{transform:rotate(360deg)}}
+.sys-tabs{position:relative;z-index:2;display:grid;gap:8px;width:min(390px,100%);margin-top:58px}
+.sys-tab{display:grid;grid-template-columns:34px 1fr 20px;align-items:center;gap:12px;text-align:left;min-height:54px;padding:0 14px;border:1px solid rgba(207,229,250,.16);border-radius:8px;background:rgba(7,16,27,.68);backdrop-filter:blur(12px);color:#dce8f4;transition:.35s var(--ease)}
+.sys-tab i{font:500 10px ui-monospace,monospace;color:#71baff;font-style:normal}.sys-tab span{font-size:13px}.sys-tab b{font-weight:400;color:#7391ae;opacity:.6}.sys-tab:hover,.sys-tab.active{border-color:rgba(74,164,255,.72);background:rgba(29,87,145,.35);transform:translateX(5px);box-shadow:0 12px 34px rgba(0,0,0,.16)}.sys-tab.active b{opacity:1;color:#8dd8ff}
+.sys-footnote{position:absolute;left:28px;bottom:24px;max-width:75%;font-size:11px;color:#8ea2b7}
+.sys-detail{display:flex;flex-direction:column;align-items:flex-start;padding:clamp(24px,4vw,44px);border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:0 18px 60px -40px rgba(13,31,51,.25)}
+.sys-number{font:500 12px ui-monospace,monospace;color:#315dff;letter-spacing:.12em}.sys-status{display:flex;align-items:center;gap:8px;margin-top:36px;font:600 9px ui-monospace,monospace;letter-spacing:.13em;color:#71808e}.sys-status i{width:7px;height:7px;border-radius:50%;background:#24ae7b;box-shadow:0 0 0 4px rgba(36,174,123,.12)}
+.sys-detail h3{margin:18px 0 12px;font:500 clamp(27px,3vw,40px)/1.08 var(--f-d);letter-spacing:-.045em}.sys-detail>p{margin:0;color:#65717c;line-height:1.8;font-size:14px}.sys-rule{height:1px;width:100%;background:var(--line);margin:28px 0 18px}.sys-meta{display:grid;gap:6px;margin:0 0 18px}.sys-meta span{font:600 9px ui-monospace,monospace;letter-spacing:.12em;color:#98a2ac}.sys-meta b{font-size:13px;font-weight:500;color:#26313b}.sys-detail .btn{margin-top:auto}
+.phase-timeline{margin-top:clamp(50px,7vw,88px);padding:clamp(24px,4vw,44px);border-radius:18px;background:linear-gradient(125deg,#0b1420,#132338);color:#f5f8fc;overflow:hidden;position:relative}.phase-timeline:after{content:"";position:absolute;width:420px;height:420px;border:1px solid rgba(77,157,255,.14);border-radius:50%;right:-130px;top:-280px;box-shadow:0 0 0 45px rgba(77,157,255,.025),0 0 0 90px rgba(77,157,255,.02);pointer-events:none}
+.phase-t-head{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:34px;position:relative;z-index:1}.phase-t-head h3{font:500 clamp(25px,3.4vw,42px)/1.1 var(--f-d);letter-spacing:-.04em;margin:10px 0 0}.phase-t-head p{max-width:34ch;margin:0;color:#9cabbc;font-size:13px}.phase-stages{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:8px;position:relative;z-index:1}.phase-stage{position:relative;text-align:left;border:0;border-top:1px solid rgba(190,216,242,.28);background:none;color:#f5f8fc;padding:18px 8px 4px 0;min-width:0}.phase-stage:before{content:"";position:absolute;top:-4px;left:0;width:7px;height:7px;border-radius:50%;background:#40546b;box-shadow:0 0 0 4px #14263a}.phase-stage.has:before{background:#45d5a0;box-shadow:0 0 0 4px rgba(69,213,160,.12),0 0 18px rgba(69,213,160,.6)}.phase-stage strong{display:block;font:500 11px/1.4 var(--f-b);min-height:34px}.phase-stage em{display:block;margin-top:10px;color:#8ea3ba;font:400 10px ui-monospace,monospace;font-style:normal}.phase-stage:hover strong{color:#8edbff}.phase-stage:focus-visible{outline-color:#8edbff}
+@media(max-width:900px){.sys-layout{grid-template-columns:1fr}.sys-visual{min-height:440px}.sys-detail{min-height:350px}.phase-stages{grid-template-columns:repeat(4,1fr);row-gap:22px}}
+@media(max-width:560px){.sys-visual{min-height:420px;padding:20px}.sys-tabs{margin-top:50px;width:100%}.sys-tab{min-height:49px}.sys-footnote{left:20px;bottom:18px}.phase-t-head{display:block}.phase-t-head p{margin-top:14px}.phase-stages{grid-template-columns:repeat(2,1fr)}.phase-stage strong{min-height:0}.phase-timeline{padding:24px 18px}}
+@media(prefers-reduced-motion:reduce){.sys-orbit{animation:none}}
 
 </style></head><body>
 <div class="ld" id="ld" role="status" aria-live="polite"><div class="ld-in"><div class="ld-brand">Safex</div><div class="ld-line"><i id="ldbar"></i></div><div class="ld-txt" id="ldtxt">Loading scene</div></div></div>
@@ -367,10 +477,11 @@ html.rm *{animation:none!important;transition-duration:.01ms!important}
 
 <header class="nav" id="nav">
   <a class="brand" href="#top" data-go="top" aria-label="Safex project intelligence, back to top">
-    <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="16" cy="16" r="13" stroke="#34D6FF" stroke-width="1.5"/><path d="M8 20 L16 7 L24 20" stroke="#E9EEF3" stroke-width="1.5" stroke-linejoin="round"/><circle cx="16" cy="21" r="2.4" fill="#34D6FF"/></svg>
+    <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="16" cy="16" r="13" stroke="#245BFF" stroke-width="1.5"/><path d="M8 20 L16 7 L24 20" stroke="#151719" stroke-width="1.5" stroke-linejoin="round"/><circle cx="16" cy="21" r="2.4" fill="#245BFF"/></svg>
     <span>Safex</span><em>Project intelligence</em>
   </a>
   <nav class="links" aria-label="Sections">
+    <a href="#systems" data-go="systems">Systems</a>
     <a href="#overview" data-go="overview">Overview</a>
     <a href="#attention" data-go="attention">Attention</a>
     <a href="#projects" data-go="projects">Projects</a>
@@ -389,10 +500,12 @@ html.rm *{animation:none!important;transition-duration:.01ms!important}
 <main id="main">
 <section class="hero" id="top" aria-label="Introduction">
   <canvas id="gl" aria-hidden="true"></canvas>
-  <svg class="gl-fb" viewBox="0 0 640 420" fill="none" stroke="#34D6FF" stroke-width="1.5" aria-hidden="true"><rect x="170" y="190" width="300" height="130" rx="65" stroke="#8A96A3"/><path d="M330 190v-40M330 150H180v-70M330 150h160v-60M330 150v-100"/><circle cx="180" cy="74" r="6"/><circle cx="490" cy="84" r="6"/><circle cx="330" cy="44" r="6"/><path d="M215 190v130M290 190v130M365 190v130M440 190v130" opacity=".5"/></svg>
+  <svg class="gl-fb" viewBox="0 0 640 420" fill="none" stroke="#245BFF" stroke-width="1.5" aria-hidden="true"><rect x="170" y="190" width="300" height="130" rx="65" stroke="#777E85"/><path d="M330 190v-40M330 150H180v-70M330 150h160v-60M330 150v-100"/><circle cx="180" cy="74" r="6"/><circle cx="490" cy="84" r="6"/><circle cx="330" cy="44" r="6"/><path d="M215 190v130M290 190v130M365 190v130M440 190v130" opacity=".5"/></svg>
+  <div class="hs" id="hs" aria-hidden="true"></div>
+  <div class="hmodes" role="group" aria-label="Bus view"><button data-m="0" aria-pressed="true">Bus</button><button data-m="1" aria-pressed="false">Inspect</button><button data-m="2" aria-pressed="false">Suppression</button></div>
   <div class="hero-copy">
-    <h1 class="h1"><span class="ln"><b>Project</b></span><span class="ln"><b>intelligence</b></span><span class="ln"><b>for every kit.</b></span></h1>
-    <p class="lede" id="lede">Track each OEM kit from enquiry to production handover. Milestones, blockers, parts and next actions, live from your development sheet.</p>
+    <h1 class="h1"><span class="ln"><b>Projects</b></span><span class="ln"><b>in motion.</b></span></h1>
+    <p class="lede" id="lede">SAFEX project intelligence and tracking. Follow every OEM fire suppression kit from enquiry to production handover, with milestones, blockers, parts and next actions live from your development sheet.</p>
     <div class="cta"><a class="btn solid mag" href="#overview" data-go="overview">Open control room</a><a class="btn mag" href="#projects" data-go="projects">Browse projects</a></div>
   </div>
   <div class="cap" id="c1"><h3 id="c1t">Drawings and approval</h3><p id="c1p"></p></div>
@@ -405,6 +518,21 @@ html.rm *{animation:none!important;transition-duration:.01ms!important}
     <div class="hf"><span class="num" id="hf4">0</span><span>parts awaiting order</span></div>
     <div class="hf-note">Each light on the assembly is a project, placed by milestones reached. Each ring is a milestone stage, lit by how many projects got there. Select a light to open it.<span id="sync" data-err="">Connecting to Google Sheets…</span></div>
   </div>
+</section>
+
+<section class="sec phase2" id="systems" aria-labelledby="h-sys">
+ <div class="sec-head"><h2 id="h-sys"><span class="ln"><b>Inside the system</b></span></h2><p>Explore the SAFEX fire-safety architecture represented in the 3D bus. Select a component to inspect its role; project-specific installation and verification status remains in the tracker records.</p></div>
+ <div class="sys-layout">
+  <div class="sys-visual"><div class="sys-kicker">SAFEX / VEHICLE SYSTEM EXPLORER</div><div class="sys-orbit"></div><div class="sys-watermark">01—05</div><div class="sys-tabs" role="group" aria-label="System component">
+   <button class="sys-tab active" data-part="cylinder"><i>01</i><span>Suppression cylinders</span><b>↗</b></button>
+   <button class="sys-tab" data-part="pipe"><i>02</i><span>Distribution pipework</span><b>↗</b></button>
+   <button class="sys-tab" data-part="nozzle"><i>03</i><span>Discharge nozzles</span><b>↗</b></button>
+   <button class="sys-tab" data-part="gauge"><i>04</i><span>Pressure indication</span><b>↗</b></button>
+   <button class="sys-tab" data-part="detection"><i>05</i><span>Detection / control</span><b>↗</b></button>
+  </div><div class="sys-footnote">Illustrative system architecture · confirm final configuration against approved vehicle drawings.</div></div>
+  <article class="sys-detail" aria-live="polite"><div class="sys-number" id="sys-number">01 / 05</div><div class="sys-status"><i></i> ENGINEERING REFERENCE</div><h3 id="sys-title">Suppression cylinders</h3><p id="sys-desc">Stored extinguishing agent is held in dedicated cylinders and released through the distribution network when the system activates.</p><div class="sys-rule"></div><div class="sys-meta"><span>FUNCTION</span><b id="sys-function">Agent storage and release</b></div><div class="sys-meta"><span>TRACKER LINK</span><b>Project-specific status in project records</b></div><a class="btn solid" href="#projects" data-go="projects">View project records <span>↗</span></a></article>
+ </div>
+ <div class="phase-timeline"><div class="phase-t-head"><div><span class="eyebrow">DEVELOPMENT WORKFLOW</span><h3>From enquiry to handover.</h3></div><p>Live stage coverage calculated from dated milestones in the connected project data.</p></div><div class="phase-stages" id="phase-stages"></div></div>
 </section>
 
 <section class="sec" id="overview" aria-labelledby="h-ov">
@@ -479,6 +607,7 @@ html.rm *{animation:none!important;transition-duration:.01ms!important}
 <div class="tray" id="tray" role="region" aria-label="Compare tray"></div>
 <div class="toast" id="ts" role="status"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
@@ -740,7 +869,7 @@ $("#motion").textContent=RM?"Motion is off. Turn it on":"Turn motion off";$("#mo
 function setPill(st,t){const p=$("#pill");p.dataset.st=st;$("#pills").textContent=t}
 
 /* ------------------------------------------------------------- render all */
-function renderAll(anim){derive();renderHeroNums(anim);renderBand(anim);renderDonut(anim);renderStages(anim);renderCust(anim);renderPdist(anim);renderProc(anim);renderDelay(anim);renderWatch();pk(anim);chipsRender();renderProjects(anim);renderParts();renderActivity();renderTray();
+function renderAll(anim){derive();renderHeroNums(anim);renderBand(anim);renderDonut(anim);renderStages(anim);renderCust(anim);renderPdist(anim);renderProc(anim);renderDelay(anim);renderWatch();pk(anim);chipsRender();renderProjects(anim);renderParts();renderActivity();renderTray();renderPhase2Stages();
  if(window.HERO)HERO.setData(heroData());
  if(openK){const p=D.projects.find(x=>x.k===openK);if(p){$("#dr").innerHTML=drawerHTML(p)}else closeP()}}
 function heroData(){const s=stats();return{n:s.n,stages:s.stg.map(x=>s.n?x/s.n:0),beads:D.projects.map(p=>({k:p.k,id:p.id,model:p.model,s:eff(p),n:prog(p)}))}}
@@ -833,46 +962,174 @@ if("IntersectionObserver" in window){const nl=$$(".links a[data-go]"),io=new Int
 
 /* ------------------------------------------------------------- hero (3D) */
 window.HERO=(function(){
- let R,S,C,G,rings=[],beads=[],hits=[],flow,flowCurve,flowN=140,pts,ray,mouse={x:0,y:0,tx:0,ty:0},P=0,tp=0,need=true,vis=true,run=false,data=null,hov=null,t0=0,W=0,H=0,mat={};
+ let R,S,C,G,rings=[],beads=[],hits=[],flow,flowCurve,flowN=140,pts,ray,mouse={x:0,y:0,tx:0,ty:0},P=0,tp=0,need=true,vis=true,run=false,mode=0,mk=0,mf=0,fk=1,fv=0,ry=0,shell=[],fsm=[],wh=[],hsList=[],BUS,FS,data=null,hov=null,t0=0,W=0,H=0,mat={};
  const cv=document.getElementById("gl"),tip=document.getElementById("tip3");
- const COL={"On Track":0x3DDC97,"At Risk":0xF5B544,"Blocked":0xFF5D5D,"Done":0x8EA2FF,"On Hold":0x6F7B88};
+ const COL={"On Track":0x1F9D6B,"At Risk":0xE0961A,"Blocked":0xD64545,"Done":0x5B6CFF,"On Hold":0x8A9199};
  const RB=7.0,RS=.4,RQ=7.7,RI=i=>RB-i*RS; // stage i ring radius (outer = first stage), RQ = projects with no milestone yet
  const sm=(a,b,x)=>{x=Math.min(1,Math.max(0,(x-a)/(b-a)));return x*x*(3-2*x)};
 
  function busShape(){const s=new THREE.Shape(),L=3.1,B=-.55,T=1.35,r=.28;
   s.moveTo(-L+r,B);s.lineTo(L-r,B);s.quadraticCurveTo(L,B,L,B+r);s.lineTo(L,.55);s.lineTo(L-.55,T-.1);s.quadraticCurveTo(L-.62,T,L-.9,T);s.lineTo(-L+r,T);s.quadraticCurveTo(-L,T,-L,T-r);s.lineTo(-L,B+r);s.quadraticCurveTo(-L,B,-L+r,B);return s}
 
- function build(){
-  G=new THREE.Group();S.add(G);
-  // vehicle: faint hull + crisp edges
-  const geo=new THREE.ExtrudeGeometry(busShape(),{depth:1.5,bevelEnabled:false});geo.translate(0,0,-.75);
-  G.add(new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:0x0b1520,metalness:.6,roughness:.35,transparent:true,opacity:.55,side:THREE.DoubleSide,depthWrite:false})));
-  const ed=new THREE.LineSegments(new THREE.EdgesGeometry(geo,28),new THREE.LineBasicMaterial({color:0x7e93a8,transparent:true,opacity:.55}));G.add(ed);
-  // windows band
-  const wb=new THREE.Mesh(new THREE.BoxGeometry(4.6,.5,1.52),new THREE.MeshBasicMaterial({color:0x34D6FF,transparent:true,opacity:.07,depthWrite:false}));wb.position.set(-.3,.75,0);G.add(wb);
+ /* ---- SAFEX electric city bus (procedural, see notes) ---- */
+ function mkEnv(){const c=document.createElement("canvas");c.width=512;c.height=256;const x=c.getContext("2d"),g=x.createLinearGradient(0,0,0,256);g.addColorStop(0,"#ffffff");g.addColorStop(.5,"#dde3e8");g.addColorStop(1,"#8f989f");x.fillStyle=g;x.fillRect(0,0,512,256);x.fillStyle="#fff";[[30,28,130,38],[240,18,150,34],[420,44,70,28],[130,90,90,14]].forEach(r=>x.fillRect(r[0],r[1],r[2],r[3]));x.fillStyle="#5f686f";x.fillRect(0,172,512,84);
+  const t=new THREE.CanvasTexture(c);t.mapping=THREE.EquirectangularReflectionMapping;t.encoding=THREE.sRGBEncoding;const pm=new THREE.PMREMGenerator(R),e=pm.fromEquirectangular(t).texture;pm.dispose();t.dispose();return e}
+ function buildBus(){
+  const L=3.1,B=-.3,T=1.45,W=1.3,bv=.07,env=mkEnv(),V=(x,y,z)=>new THREE.Vector3(x,y,z),sd=[1,-1];
+  BUS=new THREE.Group();G.add(BUS);
+  const M=(o,sh,fs)=>{const m=new THREE.MeshPhysicalMaterial(Object.assign({envMap:env,envMapIntensity:1},o));m.userData.t=!!o.transparent;m.userData.b=m.opacity;if(sh)shell.push(m);if(fs)fsm.push(m);return m};
+  const paint=M({color:0xf3f5f7,metalness:.2,roughness:.3,clearcoat:1,clearcoatRoughness:.06},1),
+   glass=M({color:0x131d27,metalness:.85,roughness:.05,transparent:true,opacity:.9},1),
+   dark=M({color:0x1c2024,metalness:.3,roughness:.55},1),blue=M({color:0x245BFF,metalness:.3,roughness:.35,clearcoat:.7},1),
+   grey=M({color:0xdde1e5,metalness:.3,roughness:.5},1),seat=M({color:0x2a3a52,roughness:.8},1);
+  const add=(geo,mat,x,y,z,g)=>{const o=new THREE.Mesh(geo,mat);o.position.set(x,y,z);(g||BUS).add(o);return o},bx=(w,h,d)=>new THREE.BoxGeometry(w,h,d);
+  // body: side profile extruded with bevelled edges
+  const r=.34,s=new THREE.Shape();
+  // Rounded low-floor city-bus silhouette: softened corners and a sloped driver nose.
+  s.moveTo(-L+r,B);s.lineTo(L-.42,B);s.quadraticCurveTo(L,B,L,B+.38);
+  s.lineTo(L,.48);s.quadraticCurveTo(L,.62,L-.10,.73);
+  s.lineTo(L-.66,T-.10);s.quadraticCurveTo(L-.82,T,L-1.02,T);
+  s.lineTo(-L+.38,T);s.quadraticCurveTo(-L+.08,T,-L,.99);
+  s.lineTo(-L,B+.34);s.quadraticCurveTo(-L,B,-L+r,B);
+  const dp=W-2*bv,geo=new THREE.ExtrudeGeometry(s,{depth:dp,bevelEnabled:true,bevelThickness:bv,bevelSize:bv,bevelSegments:5,curveSegments:32});geo.translate(0,0,-dp/2);add(geo,paint,0,0,0);
+  // windscreen (raked) and rear glass
+  const ws=new THREE.Group();ws.position.set(L-.34+.065,.91+.04,0);ws.rotation.z=.43;const wm=new THREE.Mesh(new THREE.PlaneGeometry(W*.9,.92),glass);wm.rotation.y=Math.PI/2;ws.add(wm);BUS.add(ws);
+  const rg=add(new THREE.PlaneGeometry(W*.78,.58),glass,-L-bv-.004,.94,0);rg.rotation.y=-Math.PI/2;
+  // side windows, doors, livery, skirts, wheel arches
+  const wins={1:[[-2.85,-1.5],[-1.45,-.52],[.38,1.1],[1.15,2.05]],"-1":[[-2.85,-1.5],[-1.45,-.52],[-.45,.3],[.38,1.1],[1.15,1.95],[2.0,2.62]]};
+  sd.forEach(k=>{const z=k*(W/2+.004);
+   wins[k].forEach(a=>add(bx(a[1]-a[0],.7,.012),glass,(a[0]+a[1])/2,.85,z));
+   add(bx(L*2-.3,.2,.01),dark,0,-.22,k*(W/2+.003));add(bx(L*2-.7,.06,.008),blue,-.1,.26,k*(W/2+.002));
+   [[1.85],[-1.9]].forEach(w=>{const a=add(new THREE.CircleGeometry(.44,32),dark,w[0],-.38,k*(W/2+.006));if(k<0)a.rotation.y=Math.PI});
+   if(k>0)[[-.45,.3],[2.1,2.62]].forEach(d=>{const cx=(d[0]+d[1])/2,w=d[1]-d[0];add(bx(w+.04,1.15,.012),dark,cx,.68,z+.002);[-1,1].forEach(h=>add(bx(w/2-.03,.72,.014),glass,cx+h*(w/4),.82,z+.004))});
+  });
+  // lights, grille, mirrors
+  const lamp=M({color:0xffffff,emissive:0xffffff,emissiveIntensity:.9}),tail=M({color:0xff2a2a,emissive:0xff1111,emissiveIntensity:.8});
+  sd.forEach(k=>{add(bx(.04,.1,.3),lamp,L+bv+.004,.12,k*.46);add(bx(.03,.5,.07),tail,-L-bv-.004,.7,k*.58);add(bx(.03,.08,.2),tail,-L-bv-.004,-.12,k*.5);
+   add(bx(.02,.02,.24),dark,L-.55,.85,k*(W/2+.1));add(bx(.05,.34,.12),dark,L-.55,.85,k*(W/2+.22));});
+  add(bx(.03,.22,.9),dark,L+bv+.004,-.12,0);add(bx(.025,.04,.5),lamp,L+bv+.006,.3,0);
+  // roof: battery pack, HVAC, sensor
+  add(bx(2.5,.14,.86),grey,-1.0,T+.07,0);add(bx(.95,.12,.62),grey,1.1,T+.06,0);add(bx(.4,.05,.3),dark,1.9,T+.02,0);
+  // interior: floor and seats
+  add(bx(L*2-.3,.04,W-.1),dark,0,-.05,0);
+  [[-2.55,-1.2],[.6,1.8]].forEach(a=>{for(let x=a[0];x<=a[1];x+=.42)sd.forEach(k=>{add(bx(.34,.1,.34),seat,x,.28,k*.42);add(bx(.07,.4,.34),seat,x-.15,.5,k*.42)})});
   // wheels
-  [[-1.9,1],[1.9,1],[-1.9,-1],[1.9,-1]].forEach(([x,z])=>{const w=new THREE.Mesh(new THREE.TorusGeometry(.42,.07,10,36),new THREE.MeshStandardMaterial({color:0x9fb2c4,metalness:.8,roughness:.3}));w.position.set(x,-.55,z*.82);G.add(w);const h=new THREE.Mesh(new THREE.CylinderGeometry(.1,.1,.1,12),new THREE.MeshStandardMaterial({color:0x34D6FF,emissive:0x34D6FF,emissiveIntensity:.6}));h.rotation.x=Math.PI/2;h.position.copy(w.position);G.add(h)});
-  // suppression network: roof main + branches + nozzles
-  mat.pipe=new THREE.MeshStandardMaterial({color:0x34D6FF,emissive:0x1aa8d4,emissiveIntensity:.9,metalness:.5,roughness:.25,transparent:true,opacity:.95});
-  const V=(x,y,z)=>new THREE.Vector3(x,y,z);
-  const main=new THREE.CatmullRomCurve3([V(-2.7,.2,0),V(-2.3,.9,0),V(-1.9,1.28,0),V(0,1.28,0),V(2.0,1.28,0),V(2.5,1.1,0)],false,"centripetal");flowCurve=main;
-  const paths=[main,
-   new THREE.CatmullRomCurve3([V(-1.2,1.28,0),V(-1.2,1.28,.45),V(-1.2,1.0,.62)]),new THREE.CatmullRomCurve3([V(-1.2,1.28,0),V(-1.2,1.28,-.45),V(-1.2,1.0,-.62)]),
-   new THREE.CatmullRomCurve3([V(.3,1.28,0),V(.3,1.28,.45),V(.3,1.0,.62)]),new THREE.CatmullRomCurve3([V(.3,1.28,0),V(.3,1.28,-.45),V(.3,1.0,-.62)]),
-   new THREE.CatmullRomCurve3([V(1.6,1.28,0),V(1.6,1.28,.45),V(1.6,1.0,.62)]),new THREE.CatmullRomCurve3([V(1.6,1.28,0),V(1.6,1.28,-.45),V(1.6,1.0,-.62)]),
-   new THREE.CatmullRomCurve3([V(-2.7,.2,0),V(-2.7,-.1,.35),V(-2.3,-.2,.5)]),new THREE.CatmullRomCurve3([V(-2.7,.2,0),V(-2.7,-.1,-.35),V(-2.3,-.2,-.5)])];
-  paths.forEach((c,i)=>G.add(new THREE.Mesh(new THREE.TubeGeometry(c,48,i?.028:.045,8,false),mat.pipe)));
-  // tank and nozzles
-  const tank=new THREE.Mesh(new THREE.CylinderGeometry(.17,.17,.7,20),new THREE.MeshStandardMaterial({color:0xcfe9f5,metalness:.8,roughness:.25}));tank.rotation.z=Math.PI/2;tank.position.set(-2.9,.2,0);G.add(tank);
-  [[-1.2,.62],[-1.2,-.62],[.3,.62],[.3,-.62],[1.6,.62],[1.6,-.62]].forEach(([x,z])=>{const n=new THREE.Mesh(new THREE.ConeGeometry(.07,.16,14),new THREE.MeshStandardMaterial({color:0xE9EEF3,emissive:0x34D6FF,emissiveIntensity:.8}));n.position.set(x,.93,z);n.rotation.x=Math.PI;G.add(n)});
-  [[-2.3,.5],[-2.3,-.5]].forEach(([x,z])=>{const n=new THREE.Mesh(new THREE.ConeGeometry(.07,.16,14),new THREE.MeshStandardMaterial({color:0xE9EEF3,emissive:0x34D6FF,emissiveIntensity:.8}));n.position.set(x,-.28,z);n.rotation.z=Math.PI/2;G.add(n)});
-  // agent flow particles along the main line
+  const tm=M({color:0x101214,roughness:.92}),rm=M({color:0xc9ced3,metalness:1,roughness:.22}),hb=M({color:0x3a4046,metalness:.8,roughness:.4});
+  [[1.85,1],[1.85,-1],[-1.9,1],[-1.9,-1]].forEach(a=>{const g=new THREE.Group(),sp=new THREE.Group();g.position.set(a[0],-.38,a[1]*(W/2-.14));
+   const cyl=(rd,h,m,sg)=>{const o=new THREE.Mesh(new THREE.CylinderGeometry(rd,rd,h,sg||36),m);o.rotation.x=Math.PI/2;sp.add(o)};
+   cyl(.37,.26,tm);cyl(.25,.272,rm);cyl(.17,.282,hb);cyl(.07,.3,rm,16);
+   for(let i=0;i<5;i++){const b=new THREE.Mesh(bx(.34,.03,.285),hb);b.rotation.z=i/5*Math.PI;sp.add(b)}
+   const sidewall=new THREE.Mesh(new THREE.TorusGeometry(.335,.024,8,40),tm);sidewall.position.z=.145;sp.add(sidewall);
+   for(let n=0;n<28;n++){const a=n/28*Math.PI*2,tread=new THREE.Mesh(bx(.052,.105,.245),tm);tread.position.set(Math.cos(a)*.36,Math.sin(a)*.36,0);tread.rotation.z=a;sp.add(tread)}
+   g.add(sp);BUS.add(g);wh.push(sp)});
+  // Mechanical detailing: wheel arches, exposed chassis, suspension, access panels and service hardware.
+  const archMat=M({color:0x252b31,metalness:.72,roughness:.34},1), seamMat=M({color:0x87919a,metalness:.78,roughness:.3},1), rubber=M({color:0x111519,roughness:.95},1),
+   ventMat=M({color:0x333b43,metalness:.68,roughness:.42},1), amber=M({color:0xffa51f,emissive:0x8a3e00,emissiveIntensity:.35},1);
+  // Continuous structural rails under the passenger floor, with cross-members and axle housings.
+  [-.48,.48].forEach(z=>{add(bx(5.45,.13,.12),archMat,-.02,-.39,z);add(bx(5.1,.07,.08),seamMat,-.02,-.49,z)});
+  [-2.35,-.65,1.05,2.45].forEach(x=>add(bx(.11,.16,1.02),archMat,x,-.43,0));
+  [[-1.9,1],[1.85,1]].forEach(a=>{const ax=add(new THREE.CylinderGeometry(.085,.085,1.22,24),seamMat,a[0],-.42,0);ax.rotation.x=Math.PI/2;
+    const diff=new THREE.Mesh(new THREE.BoxGeometry(.38,.2,.42),archMat);diff.position.set(a[0],-.42,0);BUS.add(diff)});
+  // Raised wheel-arch lips and dark inner liners, visible on both flanks.
+  [-1.9,1.85].forEach(x=>sd.forEach(k=>{
+    const z=k*(W/2+.012),arc=new THREE.Mesh(new THREE.TorusGeometry(.49,.045,10,56,Math.PI),archMat);
+    arc.position.set(x,-.38,z);BUS.add(arc);
+    const liner=new THREE.Mesh(new THREE.TorusGeometry(.445,.055,8,48,Math.PI),rubber);liner.position.set(x,-.38,z-k*.018);BUS.add(liner);
+    // Six wheel fasteners and a machined hub ring.
+    const hub=new THREE.Mesh(new THREE.TorusGeometry(.205,.018,8,36),seamMat);hub.position.set(x,-.38,z+k*.15);BUS.add(hub);
+    for(let n=0;n<8;n++){const a=n*Math.PI/4,bolt=new THREE.Mesh(new THREE.CylinderGeometry(.018,.018,.018,8),seamMat);bolt.rotation.x=Math.PI/2;bolt.position.set(x+Math.cos(a)*.145,-.38+Math.sin(a)*.145,z+k*.155);BUS.add(bolt)}
+  }));
+  // Body panel joints, service hatches, door rails and lower rub strip.
+  sd.forEach(k=>{const z=k*(W/2+.014);
+    [-2.9,-1.42,-.35,1.12,2.28].forEach(x=>{const line=add(bx(.012,.68,.008),seamMat,x,.84,z);line.material.opacity=.45;line.material.transparent=true});
+    [-2.65,-.92,1.35,2.72].forEach(x=>{const hatch=add(bx(.36,.25,.018),dark,x,-.02,z);hatch.material=archMat;add(bx(.18,.012,.012),seamMat,x,-.02,z+k*.012)});
+    add(bx(5.7,.055,.035),archMat,-.05,-.29,z);
+    // Side marker lamps and reflectors.
+    [-2.55,-.1,2.45].forEach(x=>{add(bx(.09,.045,.025),amber,x,.02,z+k*.018);add(bx(.06,.025,.025),lamp,x,.02,z+k*.02)});
+  });
+  // Front fascia: segmented grille, bumper beam, tow point, split lamps and wipers.
+  add(bx(.075,.28,.92),archMat,L+.015,-.12,0);
+  for(let i=0;i<9;i++)add(bx(.012,.018,.72),seamMat,L+.058,-.20+i*.025,0);
+  add(bx(.18,.13,1.24),dark,L-.02,-.34,0);
+  add(bx(.12,.075,1.18),seamMat,L+.06,-.34,0);
+  add(new THREE.TorusGeometry(.065,.018,8,20),seamMat,L+.14,-.34,0).rotation.y=Math.PI/2;
+  [-.43,.43].forEach(z=>{add(bx(.055,.14,.22),lamp,L+.09,.17,z);add(bx(.06,.055,.24),amber,L+.095,-.02,z)});
+  // Windscreen wipers and mirror arms with mirror housings.
+  [-.27,.27].forEach(z=>{const w=add(bx(.018,.018,.32),dark,L+.09,.53,z);w.rotation.x=.12});
+  sd.forEach(k=>{const arm=add(bx(.045,.34,.045),archMat,L-.48,.93,k*.78);arm.rotation.z=-.24;const mirror=add(new THREE.BoxGeometry(.18,.24,.13),dark,L-.55,1.05,k*.92);mirror.rotation.z=-.12;add(bx(.012,.15,.09),grey,L-.55,1.05,k*1.0)});
+  // Roof-mounted HVAC modules with cooling fins, intake grilles and high-voltage covers.
+  [-1.45,.35,1.65].forEach((x,j)=>{add(bx(j===1?1.05:1.25,.18,.92),archMat,x,T+.13,0);add(bx(j===1?.88:1.08,.045,.72),grey,x,T+.24,0);
+    for(let n=0;n<8;n++)add(bx(.025,.018,.62),seamMat,x-.42+n*.12,T+.275,0);
+    add(bx(.14,.035,.2),blue,x+.48,T+.28,.28)});
+  // Rear service grille and vertical tail-light stacks.
+  add(bx(.045,.48,.72),archMat,-L-.015,.42,0);
+  for(let n=0;n<7;n++)add(bx(.012,.035,.62),seamMat,-L-.045,.22+n*.055,0);
+  sd.forEach(k=>{add(bx(.055,.38,.13),tail,-L-.05,.72,k*.49);add(bx(.06,.09,.14),amber,-L-.05,.42,k*.49)});
+  // Small exposed fasteners along the lower skirt give the body scale and manufactured detail.
+  sd.forEach(k=>{for(let x=-2.75;x<=2.76;x+=.28){const bolt=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,.012,8),seamMat);bolt.rotation.x=Math.PI/2;bolt.position.set(x,-.23,k*(W/2+.035));BUS.add(bolt)}});
+
+  // ground shadow
+  const c=document.createElement("canvas");c.width=c.height=128;const x=c.getContext("2d"),rg2=x.createRadialGradient(64,64,4,64,64,64);rg2.addColorStop(0,"rgba(21,23,25,.5)");rg2.addColorStop(1,"rgba(21,23,25,0)");x.fillStyle=rg2;x.fillRect(0,0,128,128);
+  const sh=add(new THREE.PlaneGeometry(9,3.4),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false}),0,-.755,0);sh.rotation.x=-Math.PI/2;
+  /* ---- SAFEX fire suppression installation ---- */
+  FS=new THREE.Group();BUS.add(FS);
+  const red=M({color:0xd8392b,metalness:.35,roughness:.28,clearcoat:.8},0,1),steel=M({color:0xc4cad0,metalness:1,roughness:.2},0,1),
+   pipe=M({color:0x245BFF,emissive:0x1a46d6,emissiveIntensity:.5,metalness:.4,roughness:.3},0,1),amb=M({color:0xffa11f,emissive:0xff8a00,emissiveIntensity:.4,roughness:.4},0,1),
+   led=M({color:0x22e08a,emissive:0x22e08a,emissiveIntensity:1},0,1),face=M({color:0xffffff,emissive:0xffffff,emissiveIntensity:.3},0,1),ctl=M({color:0x23282e,metalness:.4,roughness:.4},0,1);
+  mat.pipe=pipe;
+  const tube=(cv,rd)=>add(new THREE.TubeGeometry(cv,48,rd,10,false),pipe,0,0,0,FS);
+  [-2.75,-2.4,-2.05].forEach(px=>{add(new THREE.CylinderGeometry(.15,.15,.85,28),red,px,.4,0,FS);add(new THREE.SphereGeometry(.15,24,12),red,px,.825,0,FS);add(new THREE.SphereGeometry(.15,24,12),red,px,-.025,0,FS);
+   add(new THREE.CylinderGeometry(.06,.06,.1,16),steel,px,.99,0,FS);add(new THREE.CylinderGeometry(.045,.045,.12,16),steel,px,1.08,0,FS);tube(new THREE.LineCurve3(V(px,1.1,0),V(px,1.28,0)),.03)});
+  const main=new THREE.LineCurve3(V(-2.9,1.28,0),V(2.45,1.28,0));flowCurve=main;tube(main,.04);
+  const nz=(x,y,z)=>{add(new THREE.ConeGeometry(.065,.15,18),steel,x,y,z,FS).rotation.x=Math.PI;add(new THREE.CylinderGeometry(.03,.03,.05,12),steel,x,y+.1,z,FS)};
+  [-1.2,.3,1.6].forEach(px=>sd.forEach(k=>{tube(new THREE.CatmullRomCurve3([V(px,1.28,0),V(px,1.28,k*.4),V(px,1.14,k*.6)]),.025);nz(px,1.06,k*.6)}));
+  sd.forEach(k=>{tube(new THREE.CatmullRomCurve3([V(-2.9,1.28,0),V(-2.9,1.28,k*.5),V(-2.9,.95,k*.5)]),.025);nz(-2.9,.85,k*.5)});
+  const gg=new THREE.Group();gg.position.set(-2.4,1.14,.2);FS.add(gg);const gd=new THREE.Mesh(new THREE.CylinderGeometry(.08,.08,.03,28),face);gd.rotation.x=Math.PI/2;gg.add(gd);
+  const bz=new THREE.Mesh(new THREE.TorusGeometry(.082,.012,8,28),steel);gg.add(bz);const nd=new THREE.Mesh(bx(.008,.06,.006),red);nd.position.set(.015,.02,.02);nd.rotation.z=-.7;gg.add(nd);
+  tube(new THREE.LineCurve3(V(-2.4,1.1,0),V(-2.4,1.14,.2)),.012);
+  add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([V(-2.95,.3,-.55),V(-2.95,1.35,-.55),V(0,1.38,-.55),V(2.4,1.2,-.5),V(2.4,.8,-.42)]),80,.014,8,false),amb,0,0,0,FS);
+  [-2.6,-1.2,.3,1.6].forEach(px=>add(new THREE.CylinderGeometry(.07,.07,.03,18),steel,px,1.41,-.2,FS));
+  add(bx(.1,.24,.3),ctl,2.45,.68,-.34,FS);add(bx(.012,.03,.03),led,2.505,.76,-.34,FS);add(bx(.012,.03,.03),amb,2.505,.7,-.34,FS);
   const fp=new Float32Array(flowN*3),fg=new THREE.BufferGeometry();fg.setAttribute("position",new THREE.BufferAttribute(fp,3));
-  flow=new THREE.Points(fg,new THREE.PointsMaterial({color:0xcff6ff,size:.07,transparent:true,opacity:.95,depthWrite:false,blending:THREE.AdditiveBlending}));G.add(flow);
+  flow=new THREE.Points(fg,new THREE.PointsMaterial({color:0x245BFF,size:.085,transparent:true,opacity:.95,depthWrite:false}));flow.frustumCulled=false;FS.add(flow);
+  const hsEl=document.getElementById("hs");
+  [["Suppression cylinders","3 agent cylinders, rear bay",-2.4,.5,0],["Pressure monitor","Gauge on the cylinder manifold",-2.4,1.14,.22],["Suppression piping","Roof main with branch lines",-.45,1.28,0],["Discharge nozzles","Cabin ceiling and rear bay",.3,1.04,.6],["Heat detection","Linear heat cable and detectors",-2.95,.8,-.55],["Control unit","Driver area, status and alarm",2.45,.68,-.34]].forEach(h=>{
+   if(!hsEl)return;const b=document.createElement("button");b.type="button";b.tabIndex=-1;b.innerHTML="<i></i><u></u><span><b>"+h[0]+"</b><small>"+h[1]+"</small></span>";hsEl.appendChild(b);hsList.push({el:b,p:V(h[2],h[3],h[4])})});
+  FS.visible=false}
+ function applyMode(dt,anim){
+  mk+=((mode?1:0)-mk)*.07;mf+=((mode===2?1:0)-mf)*.06;fk+=([1,.2,.06][mode]-fk)*.08;fv+=((mode?1:0)-fv)*.08;
+  shell.forEach(m=>{const tr=m.userData.t||fk<.99;if(m.transparent!==tr){m.transparent=tr;m.needsUpdate=true}m.opacity=m.userData.b*fk;m.depthWrite=!tr||(!m.userData.t&&fk>.9)});
+  FS.visible=fv>.02;fsm.forEach(m=>{const tr=fv<.99;if(m.transparent!==tr){m.transparent=tr;m.needsUpdate=true}m.opacity=fv});
+  if(flow)flow.material.opacity=fv;if(anim)wh.forEach(w=>w.rotation.z-=dt*1.4)}
+ function projectHS(){if(fv<.02||!hsList.length)return;hsList.forEach(h=>{const v=h.p.clone();BUS.localToWorld(v);v.project(C);const x=(v.x*.5+.5)*W,y=(-v.y*.5+.5)*H;h.el.style.transform="translate3d("+x.toFixed(1)+"px,"+y.toFixed(1)+"px,0)";h.el.classList.toggle("l",x>W*.62)})}
+
+ function loadCadBus(){
+  // The supplied engineering CAD assembly is the source of truth for the bus geometry.
+  // Keep the procedural model as a fallback if the external GLB cannot be loaded.
+  if(!THREE.GLTFLoader){console.warn("GLTFLoader unavailable; using procedural bus fallback.");return}
+  const loader=new THREE.GLTFLoader();
+  loader.load("safex-bus-cad.glb",gltf=>{
+   const cad=gltf.scene;
+   cad.name="SAFEX supplied bus CAD";
+   cad.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;o.frustumCulled=true;
+    if(o.material){o.material.side=THREE.DoubleSide;o.material.needsUpdate=true}}});
+   // Hide the placeholder bus and its illustrative suppression overlay; the supplied
+   // CAD already represents the bus with its system installed.
+   BUS.children.forEach(o=>{o.visible=false});
+   BUS.add(cad);
+   BUS.userData.cadLoaded=true;
+   console.info("Loaded supplied SAFEX bus CAD assembly.");
+  },xhr=>{if(xhr.total)console.info("Loading bus CAD:",Math.round(xhr.loaded/xhr.total*100)+"%")},err=>{
+   console.warn("Could not load safex-bus-cad.glb; using procedural bus fallback.",err);
+  });
+ }
+
+ function build(){
+   G=new THREE.Group();S.add(G);buildBus();loadCadBus();
   // milestone rings
   for(let i=0;i<8;i++){const r=RI(i),g=new THREE.Group(),seg=160,pp=[];for(let k=0;k<seg;k++){const a=k/seg*Math.PI*2;pp.push(new THREE.Vector3(Math.cos(a)*r,0,Math.sin(a)*r))}
    const base=new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(pp),new THREE.LineBasicMaterial({color:0x7e93a8,transparent:true,opacity:.2}));g.add(base);
-   const am=new THREE.MeshBasicMaterial({color:0x34D6FF,transparent:true,opacity:.9}),arc=new THREE.Mesh(new THREE.TorusGeometry(r,.014,6,200,.0001),am);arc.rotation.x=Math.PI/2;g.add(arc);
+   const am=new THREE.MeshBasicMaterial({color:0x245BFF,transparent:true,opacity:.9}),arc=new THREE.Mesh(new THREE.TorusGeometry(r,.014,6,200,.0001),am);arc.rotation.x=Math.PI/2;g.add(arc);
    rings.push({g,base,arc,r,am,frac:0,cur:0,rot:(i%2?-1:1)*(.04+i*.004)});G.add(g)}
   // queue ring (no milestone yet)
   {const r=RQ,pp=[];for(let k=0;k<160;k++){const a=k/160*Math.PI*2;pp.push(new THREE.Vector3(Math.cos(a)*r,0,Math.sin(a)*r))}
@@ -880,9 +1137,10 @@ window.HERO=(function(){
   // dust
   const dn=260,dp=new Float32Array(dn*3);for(let i=0;i<dn;i++){const a=Math.random()*6.283,r=3+Math.random()*9;dp[i*3]=Math.cos(a)*r;dp[i*3+1]=(Math.random()-.5)*7;dp[i*3+2]=Math.sin(a)*r}
   const dg=new THREE.BufferGeometry();dg.setAttribute("position",new THREE.BufferAttribute(dp,3));pts=new THREE.Points(dg,new THREE.PointsMaterial({color:0x9fb2c4,size:.035,transparent:true,opacity:.5,depthWrite:false}));G.add(pts);
-  // lights
-  S.add(new THREE.AmbientLight(0x8fb4d0,.55));
-  const l1=new THREE.PointLight(0x34D6FF,2.4,30);l1.position.set(-4,5,5);S.add(l1);const l2=new THREE.PointLight(0xffffff,1.2,30);l2.position.set(6,3,-5);S.add(l2);mat.l1=l1;
+   const hl=new THREE.HemisphereLight(0xdce9ff,0x101722,1.05);S.add(hl);
+   const dl=new THREE.DirectionalLight(0xffffff,2.15);dl.position.set(-4,8,6);S.add(dl);
+   const rl=new THREE.DirectionalLight(0x4c8dff,1.35);rl.position.set(6,3,-6);S.add(rl);
+   const rim=new THREE.DirectionalLight(0x20d8ff,1.1);rim.position.set(-2,2,-7);S.add(rim);
  }
 
  function layout(){W=cv.clientWidth||innerWidth;H=cv.clientHeight||innerHeight;R.setSize(W,H,false);C.aspect=W/H;
@@ -895,7 +1153,7 @@ window.HERO=(function(){
   beads.forEach(b=>{G.remove(b.m)});beads=[];hits=[];
   const buckets={};d.beads.forEach((b,i)=>{const idx=b.n>0?b.n-1:-1;(buckets[idx]=buckets[idx]||[]).push({...b,i})});
   Object.entries(buckets).forEach(([idx,arr])=>{idx=+idx;const r=idx<0?RQ:RI(idx);arr.forEach((b,j)=>{
-   const col=COL[b.s]||0x34D6FF,m=new THREE.Group(),core=new THREE.Mesh(new THREE.SphereGeometry(.11,16,12),new THREE.MeshBasicMaterial({color:col})),halo=new THREE.Mesh(new THREE.SphereGeometry(.24,14,10),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.18,depthWrite:false})),hit=new THREE.Mesh(new THREE.SphereGeometry(.38,8,6),new THREE.MeshBasicMaterial({visible:false}));
+   const col=COL[b.s]||0x245BFF,m=new THREE.Group(),core=new THREE.Mesh(new THREE.SphereGeometry(.11,16,12),new THREE.MeshBasicMaterial({color:col})),halo=new THREE.Mesh(new THREE.SphereGeometry(.24,14,10),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.18,depthWrite:false})),hit=new THREE.Mesh(new THREE.SphereGeometry(.38,8,6),new THREE.MeshBasicMaterial({visible:false}));
    m.add(core,halo,hit);hit.userData.bead=b;G.add(m);hits.push(hit);
    beads.push({m,core,halo,hit,r,a0:(j/arr.length)*Math.PI*2+idx*.9,sp:(idx<0?.05:.07+idx*.012)*(idx%2?-1:1),b,ring:idx})})});
   need=true}
@@ -911,9 +1169,9 @@ window.HERO=(function(){
   if(!anim&&!need)return;need=false;
   mouse.x+=(mouse.tx-mouse.x)*.05;mouse.y+=(mouse.ty-mouse.y)*.05;tp+=(P-tp)*.08;
   const time=t/1000,sp=anim?1:0;
-  G.rotation.y=(anim?time*.05:.4)+mouse.x*.35+tp*Math.PI*1.1;
+  applyMode(dt,anim);{const tg=(mode?-.4+mouse.x*.18:(anim?time*.05:.4)+mouse.x*.35);let d=ry-tg;d-=Math.round(d/6.2832)*6.2832;ry=tg+d*.93;G.rotation.y=ry+tp*Math.PI*1.1}
   G.rotation.x=.18+mouse.y*-.1+tp*.16;
-  C.position.set(0,2.2-tp*1.2,15.5-tp*3.2);C.lookAt(0,0,0);
+  C.position.set(mf*2.4,2.2-tp*1.2-mf*.5,15.5-tp*3.2-mf*4.6);C.lookAt(mf*2.4,0,0);
   rings.forEach((r,i)=>{r.g.rotation.y+=r.rot*dt*sp;
    const w=[[.12,.42],[.42,.68],[.68,.96]],gi=i<2?0:i<5?1:2,e=sm(w[gi][0],w[gi][0]+.1,tp)*(1-sm(w[gi][1]-.1,w[gi][1],tp)),tgt=r.frac;
    r.cur+=(tgt-r.cur)*(anim?.04:1);const f=Math.max(.0001,r.cur*Math.PI*2);
@@ -925,14 +1183,14 @@ window.HERO=(function(){
   if(flow){const p=flow.geometry.attributes.position;for(let i=0;i<flowN;i++){const u=((i/flowN)+time*.09*sp)%1,v=flowCurve.getPoint(u);p.setXYZ(i,v.x,v.y,v.z)}p.needsUpdate=true}
   if(pts)pts.rotation.y=time*.01*sp;
   mat.pipe.emissiveIntensity=.7+.3*Math.sin(time*1.4)*sp;
-  R.render(S,C)}
+  R.render(S,C);projectHS()}
 
  return{
   init(){if(!window.THREE)return false;
    try{R=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true,powerPreference:"high-performance"})}catch(e){return false}
    if(!R.getContext())return false;
    R.setPixelRatio(Math.min(devicePixelRatio||1,innerWidth<800?1.5:2));R.setClearColor(0x000000,0);
-   S=new THREE.Scene();S.fog=new THREE.FogExp2(0x05070A,.028);C=new THREE.PerspectiveCamera(36,1,.1,100);ray=new THREE.Raycaster();
+   S=new THREE.Scene();S.fog=new THREE.FogExp2(0x080D15,.008);R.toneMapping=THREE.ACESFilmicToneMapping;R.toneMappingExposure=1.05;R.outputEncoding=THREE.sRGBEncoding;C=new THREE.PerspectiveCamera(36,1,.1,100);ray=new THREE.Raycaster();
    build();layout();
    cv.addEventListener("webglcontextlost",e=>{e.preventDefault();run=false;document.documentElement.classList.add("no3d")});
    if("ResizeObserver" in window)new ResizeObserver(layout).observe(cv);else addEventListener("resize",layout);
@@ -940,11 +1198,28 @@ window.HERO=(function(){
    if(matchMedia("(pointer:fine)").matches){addEventListener("pointermove",e=>{if(e.clientY<H+scrollY)pick(e)},{passive:true});
     cv.addEventListener("click",()=>{if(hov&&window.openP)openP(hov.k)});cv.addEventListener("pointerleave",()=>{hov=null;tip.classList.remove("o");mouse.tx=0;mouse.ty=0;need=true})}
    else cv.addEventListener("click",e=>{pick(e);if(hov&&window.openP)openP(hov.k)});
+   document.querySelectorAll(".hmodes button").forEach(b=>b.addEventListener("click",()=>HERO.setMode(+b.dataset.m)));
    run=true;requestAnimationFrame(frame);return true},
   setData(d){setData(d)},
-  setP(p){P=p;need=true}
+  setP(p){P=p;need=true},
+  setMode(m){mode=m;need=true;const h=document.documentElement;h.classList.toggle("hm1",m===1);h.classList.toggle("hm2",m===2);document.querySelectorAll(".hmodes button").forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.m===m)))}
  }})();
 
+
+
+/* Phase 2 interactions: engineering explorer and data-derived stage coverage */
+const SYS_PARTS={
+ cylinder:{n:"01 / 05",t:"Suppression cylinders",d:"Stored extinguishing agent is held in dedicated cylinders and released through the distribution network when the system activates.",f:"Agent storage and release"},
+ pipe:{n:"02 / 05",t:"Distribution pipework",d:"A routed pipe network carries the extinguishing agent from the cylinder assembly towards the protected zones. Final routing must follow approved vehicle packaging and drawings.",f:"Agent distribution"},
+ nozzle:{n:"03 / 05",t:"Discharge nozzles",d:"Nozzles are positioned to deliver the extinguishing agent into defined protected areas. Their quantity, orientation and coverage are vehicle- and system-specific.",f:"Directed agent discharge"},
+ gauge:{n:"04 / 05",t:"Pressure indication",d:"A pressure indicator and associated pressure-relief hardware provide a means to inspect cylinder pressure and manage the designed pressure boundary.",f:"Pressure monitoring and protection"},
+ detection:{n:"05 / 05",t:"Detection / control",d:"Detection devices and the control unit form the sensing and activation layer, coordinating system response according to the approved electrical and control design.",f:"Detection, logic and activation"}
+};
+function initPhase2(){
+ const tabs=$$('.sys-tab');tabs.forEach(b=>b.addEventListener('click',()=>{const d=SYS_PARTS[b.dataset.part];if(!d)return;tabs.forEach(x=>x.classList.toggle('active',x===b));$('#sys-number').textContent=d.n;$('#sys-title').textContent=d.t;$('#sys-desc').textContent=d.d;$('#sys-function').textContent=d.f;if(window.gsap&&!RM)gsap.fromTo('.sys-detail h3',{y:12,opacity:0},{y:0,opacity:1,duration:.45,ease:'power3.out'});}));
+ renderPhase2Stages();
+}
+function renderPhase2Stages(){const el=$('#phase-stages');if(!el)return;const ps=D.projects.filter(p=>p.model);el.innerHTML=MS.map((m,i)=>{const count=ps.filter(p=>Array.isArray(p.m)&&p.m[i]).length;const pct=ps.length?Math.round(count/ps.length*100):0;return `<div class="phase-stage ${count?'has':''}" aria-label="${esc(m)}: ${count} of ${ps.length} projects reached"><strong>${esc(m)}</strong><em>${count} / ${ps.length} · ${pct}%</em></div>`}).join('');}
 
 /* ------------------------------------------------------------ motion layer */
 function initMotion(){
@@ -980,6 +1255,7 @@ function intro(){HTML.classList.add("ready");
 /* ----------------------------------------------------------------- boot */
 (function boot(){
  readLog();ldStep(.25,"Building the 3D scene");
+ initPhase2();
  let hero=false;try{hero=window.HERO&&HERO.init()}catch(e){hero=false;console.warn("3D hero unavailable",e)}
  if(!hero)HTML.classList.add("no3d");
  ldStep(.5,"Preparing the control room");
